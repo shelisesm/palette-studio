@@ -142,7 +142,7 @@ body.dragging-sw .swtools{display:none!important}
 .tb[aria-expanded="true"]{background:var(--hover);border-color:var(--muted)}
 
 /* Popovers */
-.pop{position:fixed;z-index:30;background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);padding:14px;width:min(320px,calc(100vw - 32px))}
+.pop{overflow:auto;overscroll-behavior:contain;position:fixed;z-index:30;background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);padding:14px;width:min(320px,calc(100vw - 32px))}
 .pop h3{margin:0 0 10px;font-size:14px;font-weight:800}
 .pop label{display:block;font-size:12px;font-weight:700;margin:10px 0 4px;color:var(--muted)}
 .pop .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
@@ -181,6 +181,8 @@ body.zoomed{overflow:hidden}
 @media (prefers-reduced-motion: reduce){ .sw,.sw span,.swwrap.shift{transition:none} }
 .tb.browse:hover,.tb.browse[aria-expanded="true"]{background:var(--browse);border-color:var(--browse)}
 .tb.browse[aria-expanded="true"]{box-shadow:0 0 0 2px var(--panel),0 0 0 4px var(--browse)}
+.favhead{display:flex;align-items:center;gap:10px;margin-bottom:4px}.favhead h3{margin:0}.favhead .tb{padding:5px 10px;font-size:12px}
+#bpFav[hidden],#bpLoad[hidden],#favOpen[hidden]{display:none}
 </style>
 </head>
 <body>
@@ -272,13 +274,18 @@ body.zoomed{overflow:hidden}
 </div>
 
 <div class="pop" id="browsePop" hidden role="dialog" aria-label="Browse palettes">
-  <h3>Load a palette</h3>
-  <label>Palette library</label>
-  <div class="browse-list" id="browseList"></div>
-  <label for="pasteBox">Paste hex codes or a palette link</label>
-  <textarea id="pasteBox" placeholder="880d1e dd2d4a f26a8d"></textarea>
-  <div class="btns"><button class="tb primary" id="pasteGo">Load pasted colors</button></div>
+  <div id="bpLoad">
+    <h3>Load a palette</h3>
+    <label>Palette library</label>
+    <div class="browse-list" id="browseList"></div>
+    <label for="pasteBox">Paste hex codes or a palette link</label>
+    <textarea id="pasteBox" placeholder="880d1e dd2d4a f26a8d"></textarea>
+    <div class="btns"><button class="tb primary" id="pasteGo">Load pasted colors</button><button class="tb" id="favOpen" hidden>My favorites</button></div>
+  </div>
+  <div id="bpFav" hidden>
+    <div class="favhead"><button class="tb" id="favBack" aria-label="Back to Load a palette">&larr; Back</button><h3>My favorites</h3></div>
   <div id="favSection"></div><input type="file" id="bkFile" accept=".json,.txt,application/json,text/plain" hidden>
+  </div>
 </div>
 
 <div class="pop" id="modePop" hidden role="dialog" aria-label="Color harmony"><h3>Generate using</h3><div class="menu" id="modeMenu" role="menu"></div><p class="note">Locked colors stay put. The first locked color sets the starting hue.</p></div>
@@ -299,7 +306,7 @@ body.zoomed{overflow:hidden}
 
 <script>
 /* ---------- Built-in palette library ---------- */
-const SAVED = [{"n":"Vintage Carnival Delight","c":["376C4E","F59099","6495ED","FBFBF2","FAA598","281E5D"]},{"n":"Shimmering Citrus Dream","c":["FEE613","FF9812","E2CFEA","42BFDD","31081F","FE509D"]},{"n":"Vibrant Neon Fusion","c":["FFFC40","FABA61","FE8172","FE2FA9","3A579A","36244F"]},{"n":"Sunset Beach Vibes","c":["FFFFFF","8ECAE6","219EBC","023047","FFB703","FB8500"]},{"n":"Golden Sunrise Glow","c":["000000","14213D","FCA311","F1C47B","E5E5E5","FFFFFF"]},{"n":"Floral Fantasy Dream","c":["521835","57406E","F285BC","D9A9C1","A1C6EA","37392E"]},{"n":"Summer Sunset Bliss","c":["282D74","00528D","00A49C","B46EC8","F5828C","F5CD64"]},{"n":"Jungle Adventure Fun","c":["606C38","283618","FEFAE0","DDA15E","BC6C25","C98951"]},{"n":"Electric Boho Vibes","c":["2C3486","48B8AA","CAE8DF","F8CC0B","F4AAA7","EC5D4B"]},{"n":"Oceanic Sunset Glow","c":["8ECAE6","219EBC","023047","817425","FFB703","FB8500"]},{"n":"Tropical Ocean Sunset","c":["FF6945","FF9D38","F7E9E8","FEA5A1","06629E","043C76"]},{"n":"Toasted Almond Cream","c":["FFFFFF","EFD6BD","E7C29C","E3B88B","DEAD7A","0F0D16"]},{"n":"Peach Sage Linen","c":["FFF0E3","FED1AB","E9EBEF","ECD59D","8AC4BB","22252F"]},{"n":"Harbor Clay Neutrals","c":["003443","D2DEDE","E3CCB1","D8D4BF","FCF8EF","70361B"]},{"n":"Driftwood Navy Sun","c":["E7D8C4","594835","374757","7FE4D0","001F53","FFE672"]},{"n":"Lemon Frost Midnight","c":["FEFFAC","FFE6E8","0D1321","A3DFFF","CEE2FE","F4F6FC"]},{"n":"Garden Peach Harvest","c":["386641","6A994E","A7C957","FBF7EF","FFC09F","512D38"]},{"n":"Midnight Cocoa Blush","c":["EAF3FF","CEE2FE","FDD9DC","FFE6E8","0D1321","6C3F14"]},{"n":"Cocoa Sky Blush","c":["EAF3FF","CEE2FE","FDD9DC","FFE6E8","145DA0","6C3F14"]},{"n":"Electric Rainbow Delight","c":["FF5CA8","FF1482","96009E","002266","1FD2FF","85E7FF"]},{"n":"My new palette 5","c":["040A14","232833","FFFDED","247BA0","0E192F","BB0A21"]},{"n":"My new palette 6","c":["611920","F2ECDF","DEA193","FFFFFF","0B0909","E1BD3D"]}];
+const SAVED = [{"n":"Vintage Carnival Delight","c":["376C4E","F59099","6495ED","FBFBF2","FAA598","281E5D"]},{"n":"Shimmering Citrus Dream","c":["FEE613","FF9812","E2CFEA","42BFDD","31081F","FE509D"]},{"n":"Vibrant Neon Fusion","c":["FFFC40","FABA61","FE8172","FE2FA9","3A579A","36244F"]},{"n":"Sunset Beach Vibes","c":["FFFFFF","8ECAE6","219EBC","023047","FFB703","FB8500"]},{"n":"Golden Sunrise Glow","c":["000000","14213D","FCA311","F1C47B","E5E5E5","FFFFFF"]},{"n":"Floral Fantasy Dream","c":["521835","57406E","F285BC","D9A9C1","A1C6EA","37392E"]},{"n":"Summer Sunset Bliss","c":["282D74","00528D","00A49C","B46EC8","F5828C","F5CD64"]},{"n":"Jungle Adventure Fun","c":["606C38","283618","FEFAE0","DDA15E","BC6C25","C98951"]},{"n":"Electric Boho Vibes","c":["2C3486","48B8AA","CAE8DF","F8CC0B","F4AAA7","EC5D4B"]},{"n":"Oceanic Sunset Glow","c":["8ECAE6","219EBC","023047","817425","FFB703","FB8500"]},{"n":"Tropical Ocean Sunset","c":["FF6945","FF9D38","F7E9E8","FEA5A1","06629E","043C76"]},{"n":"Toasted Almond Cream","c":["FFFFFF","EFD6BD","E7C29C","E3B88B","DEAD7A","0F0D16"]},{"n":"Peach Sage Linen","c":["FFF0E3","FED1AB","E9EBEF","ECD59D","8AC4BB","22252F"]},{"n":"Harbor Clay Neutrals","c":["003443","D2DEDE","E3CCB1","D8D4BF","FCF8EF","70361B"]},{"n":"Driftwood Navy Sun","c":["E7D8C4","594835","374757","7FE4D0","001F53","FFE672"]},{"n":"Lemon Frost Midnight","c":["FEFFAC","FFE6E8","0D1321","A3DFFF","CEE2FE","F4F6FC"]},{"n":"Garden Peach Harvest","c":["386641","6A994E","A7C957","FBF7EF","FFC09F","512D38"]},{"n":"Midnight Cocoa Blush","c":["EAF3FF","CEE2FE","FDD9DC","FFE6E8","0D1321","6C3F14"]},{"n":"Cocoa Sky Blush","c":["EAF3FF","CEE2FE","FDD9DC","FFE6E8","145DA0","6C3F14"]},{"n":"Electric Rainbow Delight","c":["FF5CA8","FF1482","96009E","002266","1FD2FF","85E7FF"]},{"n":"Crimson Harbor Night","c":["040A14","232833","FFFDED","247BA0","0E192F","BB0A21"]},{"n":"Merlot Gold Linen","c":["611920","F2ECDF","DEA193","FFFFFF","0B0909","E1BD3D"]}];
 
 /* ---------- Color math ---------- */
 const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
@@ -777,9 +784,11 @@ async function copyText(t,msg){try{await navigator.clipboard.writeText(t);toast(
 const pops=['editPop','adjPop','browsePop','exportPop','modePop','contrastPop','shadesPop','savePop'];
 function place(pop,anchor){
   pop.hidden=false;
-  const r=anchor.getBoundingClientRect(),w=pop.offsetWidth,h=pop.offsetHeight;
+  const r=anchor.getBoundingClientRect(),w=pop.offsetWidth;
   let x=Math.min(Math.max(16,r.left+r.width/2-w/2),innerWidth-w-16);
-  let y=r.top-h-10; if(y<10)y=10;
+  pop.style.maxHeight=Math.max(160,r.top-20)+'px';
+  const h2=pop.offsetHeight;
+  let y=r.top-h2-10; if(y<10)y=10;
   pop.style.left=x+'px';pop.style.top=y+'px';
 }
 function closeAll(except){
@@ -920,7 +929,10 @@ function loadColors(list,label){
 }
 $('browseList').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const p=SAVED[+b.dataset.b];loadColors(p.c.slice(),p.n)});
 $('pasteGo').onclick=()=>{const m=($('pasteBox').value.match(/[0-9a-f]{6}\b/gi)||[]).map(norm);if(m.length>10)toast('Only the first 10 colors were loaded');loadColors(m)};
-$('browseBtn').onclick=()=>toggle('browsePop',$('browseBtn'));
+function browseView(v){$('bpLoad').hidden=v!=='load';$('bpFav').hidden=v!=='fav';const p=$('browsePop');if(!p.hidden){place(p,$('browseBtn'));p.scrollTop=0}const f=v==='fav'?$('favBack'):$('favOpen');if(f&&!f.hidden)f.focus()}
+$('browseBtn').onclick=()=>{browseView('load');toggle('browsePop',$('browseBtn'))};
+$('favOpen').onclick=()=>browseView('fav');
+$('favBack').onclick=()=>browseView('load');
 
 /* Export */
 let lastCopy='hex';
@@ -1077,13 +1089,15 @@ function toggleFavColor(h){
 function syncEditFav(){const b=$('eFav');if(!b)return;b.hidden=favState!=='on';if(openIdx<0)return;const on=favHas(shown()[openIdx]);b.innerHTML=`<span class="ico">${on?IC.heartOn:IC.heart}${on?'Favorited':'Favorite'}</span>`;b.setAttribute('aria-pressed',String(on))}
 function renderFavUI(){
   $('saveBtn').hidden=favState!=='on';
+  $('favOpen').hidden=favState!=='on';
+  if(favState!=='on'&&!$('bpFav').hidden)browseView('load');
   const sec=$('favSection');
   if(favState==='loading'){sec.innerHTML='<label>Your favorites</label><p class="fempty">Loading your favorites…</p>'}
   else if(favState==='off'){sec.innerHTML=''}
   else{
     const pal=fav.palettes.length?`<div class="browse-list">${fav.palettes.map(p=>`<div class="fpal"><button class="load" data-fp="${esc(p.id)}"><i>${p.colors.map(c=>`<b style="background:#${c}"></b>`).join('')}</i><span>${esc(p.name)} (${p.colors.length})</span></button><button class="del" data-fpdel="${esc(p.id)}" title="Delete ${esc(p.name)}" aria-label="Delete saved palette ${esc(p.name)}">×</button></div>`).join('')}</div>`:'<p class="fempty">No saved palettes yet. Use Save in the palette bar.</p>';
     const cols=fav.colors.length?`<div class="favcolors">${fav.colors.map(c=>`<span class="fchip" style="background:#${c.hex}"><button style="position:absolute;inset:0;border:0;background:none;cursor:pointer;border-radius:8px" data-fc="${c.hex}" title="Add #${c.hex} to the palette" aria-label="Add #${c.hex} to the palette"></button><button class="del" data-fcdel="${c.hex}" title="Remove #${c.hex}" aria-label="Remove #${c.hex} from favorites">×</button></span>`).join('')}</div>`:'<p class="fempty">No favorite colors yet. Use the heart on any color.</p>';
-    sec.innerHTML=`<label>My favorites</label><div class="bkbar"><button class="tb" data-bk="export">Back up favorites</button><button class="tb" data-bk="import">Restore from backup</button></div><p class="fempty">${favPersist?'Your favorites are saved in this browser only. Back them up to keep them safe or use them on another device.':'<strong>This browser won’t keep your favorites after you close the page.</strong> Back them up before you leave.'}</p><div id="bkPanel" class="bkpanel" hidden></div><label>My saved palettes</label>${pal}<label>My favorite colors</label>${cols}<p class="fempty">Click a favorite color to add it to the palette.</p>`;
+    sec.innerHTML=`<div class="bkbar"><button class="tb" data-bk="export">Back up favorites</button><button class="tb" data-bk="import">Restore from backup</button></div><p class="fempty">${favPersist?'Your favorites are saved in this browser only. Back them up to keep them safe or use them on another device.':'<strong>This browser won’t keep your favorites after you close the page.</strong> Back them up before you leave.'}</p><div id="bkPanel" class="bkpanel" hidden></div><label>My saved palettes</label>${pal}<label>My favorite colors</label>${cols}<p class="fempty">Click a favorite color to add it to the palette.</p>`;
   }
   syncEditFav();
   renderBar();
