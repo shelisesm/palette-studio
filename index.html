@@ -10,13 +10,13 @@
 <style>
 :root{
   --ground:#f4f4f6; --panel:#ffffff; --ink:#18181f; --muted:#62626e; --line:#e2e2e8; --hover:#ececf1;
-  --accent:#2f5bea; --accent-ink:#ffffff; --shadow:0 6px 24px rgba(20,20,40,.12);
+  --accent:#2f5bea; --accent-ink:#ffffff; --browse:#0f7a6b; --browse-ink:#ffffff; --shadow:0 6px 24px rgba(20,20,40,.12);
   --font: Aptos, "Figtree", "Segoe UI", system-ui, sans-serif;
 }
 @media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){ --ground:#141419; --panel:#1f1f27; --ink:#ededf3; --muted:#a3a3b1; --line:#33333e; --hover:#2a2a34; --accent:#7d9bff; --accent-ink:#0e1020; --shadow:0 6px 24px rgba(0,0,0,.5); }
+  :root:not([data-theme="light"]){ --ground:#141419; --panel:#1f1f27; --ink:#ededf3; --muted:#a3a3b1; --line:#33333e; --hover:#2a2a34; --accent:#7d9bff; --accent-ink:#0e1020; --browse:#4fd1bd; --browse-ink:#0b1d1a; --shadow:0 6px 24px rgba(0,0,0,.5); }
 }
-:root[data-theme="dark"]{ --ground:#141419; --panel:#1f1f27; --ink:#ededf3; --muted:#a3a3b1; --line:#33333e; --hover:#2a2a34; --accent:#7d9bff; --accent-ink:#0e1020; --shadow:0 6px 24px rgba(0,0,0,.5); }
+:root[data-theme="dark"]{ --ground:#141419; --panel:#1f1f27; --ink:#ededf3; --muted:#a3a3b1; --line:#33333e; --hover:#2a2a34; --accent:#7d9bff; --accent-ink:#0e1020; --browse:#4fd1bd; --browse-ink:#0b1d1a; --shadow:0 6px 24px rgba(0,0,0,.5); }
 
 *{box-sizing:border-box}
 body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--font);font-size:14px;line-height:1.45}
@@ -127,6 +127,8 @@ body.dragging-sw .swtools{display:none!important}
 .tb:hover{background:var(--hover)}
 .tb:disabled{opacity:.4;cursor:not-allowed}
 .tb.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.tb.browse{background:var(--browse);color:var(--browse-ink);border-color:var(--browse)}
+.tb.browse:hover{filter:brightness(1.08)}
 .tb svg{width:16px;height:16px}
 .tb.caret{margin-left:-4px;padding-inline:8px;font-size:12px}
 .seg3{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;margin-top:4px}
@@ -177,6 +179,8 @@ body.zoomed{overflow:hidden}
   .wrap{padding-block:18px 190px}
 }
 @media (prefers-reduced-motion: reduce){ .sw,.sw span,.swwrap.shift{transition:none} }
+.tb.browse:hover,.tb.browse[aria-expanded="true"]{background:var(--browse);border-color:var(--browse)}
+.tb.browse[aria-expanded="true"]{box-shadow:0 0 0 2px var(--panel),0 0 0 4px var(--browse)}
 </style>
 </head>
 <body>
@@ -209,7 +213,7 @@ body.zoomed{overflow:hidden}
       <button class="tb" id="genBtn" title="Generate new colors (space bar). Locked colors stay. Use the menu beside it to pick a color harmony."><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/></svg><span class="lbl">Generate</span></button>
       <button class="tb caret" id="modeBtn" aria-expanded="false" aria-haspopup="true" title="Choose how colors are generated"><span id="modeLbl">Auto</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg></button>
       <button class="tb" id="saveBtn" aria-expanded="false" title="Save this palette to your favorites" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/></svg><span class="lbl">Save</span></button>
-      <button class="tb" id="browseBtn" aria-expanded="false" title="Load one of your palettes or paste colors"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 4v16"/></svg><span class="lbl">Browse</span></button>
+      <button class="tb browse" id="browseBtn" aria-expanded="false" title="Load one of your palettes or paste colors"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 4v16"/></svg><span class="lbl">Browse</span></button>
       <button class="tb primary" id="exportBtn" aria-expanded="false" title="Copy the palette"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 15V3M7 8l5-5 5 5M5 14v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"/></svg><span class="lbl">Export</span></button>
     </div>
   </div>
@@ -269,12 +273,12 @@ body.zoomed{overflow:hidden}
 
 <div class="pop" id="browsePop" hidden role="dialog" aria-label="Browse palettes">
   <h3>Load a palette</h3>
+  <label>Palette library</label>
+  <div class="browse-list" id="browseList"></div>
   <label for="pasteBox">Paste hex codes or a palette link</label>
   <textarea id="pasteBox" placeholder="880d1e dd2d4a f26a8d"></textarea>
   <div class="btns"><button class="tb primary" id="pasteGo">Load pasted colors</button></div>
   <div id="favSection"></div><input type="file" id="bkFile" accept=".json,.txt,application/json,text/plain" hidden>
-  <label>Palette library</label>
-  <div class="browse-list" id="browseList"></div>
 </div>
 
 <div class="pop" id="modePop" hidden role="dialog" aria-label="Color harmony"><h3>Generate using</h3><div class="menu" id="modeMenu" role="menu"></div><p class="note">Locked colors stay put. The first locked color sets the starting hue.</p></div>
@@ -295,7 +299,7 @@ body.zoomed{overflow:hidden}
 
 <script>
 /* ---------- Built-in palette library ---------- */
-const SAVED = [{"n":"Vintage Carnival Delight","c":["376C4E","F59099","6495ED","FBFBF2","FAA598","281E5D"]},{"n":"Shimmering Citrus Dream","c":["FEE613","FF9812","E2CFEA","42BFDD","31081F","FE509D"]},{"n":"Vibrant Neon Fusion","c":["FFFC40","FABA61","FE8172","FE2FA9","3A579A","36244F"]},{"n":"Sunset Beach Vibes","c":["FFFFFF","8ECAE6","219EBC","023047","FFB703","FB8500"]},{"n":"Golden Sunrise Glow","c":["000000","14213D","FCA311","F1C47B","E5E5E5","FFFFFF"]},{"n":"Floral Fantasy Dream","c":["521835","57406E","F285BC","D9A9C1","A1C6EA","37392E"]},{"n":"Summer Sunset Bliss","c":["282D74","00528D","00A49C","B46EC8","F5828C","F5CD64"]},{"n":"Jungle Adventure Fun","c":["606C38","283618","FEFAE0","DDA15E","BC6C25","C98951"]},{"n":"Electric Boho Vibes","c":["2C3486","48B8AA","CAE8DF","F8CC0B","F4AAA7","EC5D4B"]},{"n":"Oceanic Sunset Glow","c":["8ECAE6","219EBC","023047","817425","FFB703","FB8500"]},{"n":"Tropical Ocean Sunset","c":["FF6945","FF9D38","F7E9E8","FEA5A1","06629E","043C76"]},{"n":"Secondary Creams","c":["FFFFFF","EFD6BD","E7C29C","E3B88B","DEAD7A","0F0D16"]},{"n":"My new palette 1","c":["FFF0E3","FED1AB","E9EBEF","ECD59D","8AC4BB","22252F"]},{"n":"My new palette 2","c":["003443","D2DEDE","E3CCB1","D8D4BF","FCF8EF","70361B"]},{"n":"My new palette 3","c":["E7D8C4","594835","374757","7FE4D0","001F53","FFE672"]},{"n":"This is it Accent Yellow","c":["FEFFAC","FFE6E8","0D1321","A3DFFF","CEE2FE","F4F6FC"]},{"n":"My new palette 4","c":["386641","6A994E","A7C957","FBF7EF","FFC09F","512D38"]},{"n":"Tertiary Option","c":["EAF3FF","CEE2FE","FDD9DC","FFE6E8","0D1321","141429"]},{"n":"Midnight Cocoa Blush","c":["EAF3FF","CEE2FE","FDD9DC","FFE6E8","0D1321","6C3F14"]},{"n":"Cocoa Sky Blush","c":["EAF3FF","CEE2FE","FDD9DC","FFE6E8","145DA0","6C3F14"]},{"n":"Electric Rainbow Delight","c":["FF5CA8","FF1482","96009E","002266","1FD2FF","85E7FF"]},{"n":"My new palette 5","c":["040A14","232833","FFFDED","247BA0","0E192F","BB0A21"]},{"n":"My new palette 6","c":["611920","F2ECDF","DEA193","FFFFFF","0B0909","E1BD3D"]}];
+const SAVED = [{"n":"Vintage Carnival Delight","c":["376C4E","F59099","6495ED","FBFBF2","FAA598","281E5D"]},{"n":"Shimmering Citrus Dream","c":["FEE613","FF9812","E2CFEA","42BFDD","31081F","FE509D"]},{"n":"Vibrant Neon Fusion","c":["FFFC40","FABA61","FE8172","FE2FA9","3A579A","36244F"]},{"n":"Sunset Beach Vibes","c":["FFFFFF","8ECAE6","219EBC","023047","FFB703","FB8500"]},{"n":"Golden Sunrise Glow","c":["000000","14213D","FCA311","F1C47B","E5E5E5","FFFFFF"]},{"n":"Floral Fantasy Dream","c":["521835","57406E","F285BC","D9A9C1","A1C6EA","37392E"]},{"n":"Summer Sunset Bliss","c":["282D74","00528D","00A49C","B46EC8","F5828C","F5CD64"]},{"n":"Jungle Adventure Fun","c":["606C38","283618","FEFAE0","DDA15E","BC6C25","C98951"]},{"n":"Electric Boho Vibes","c":["2C3486","48B8AA","CAE8DF","F8CC0B","F4AAA7","EC5D4B"]},{"n":"Oceanic Sunset Glow","c":["8ECAE6","219EBC","023047","817425","FFB703","FB8500"]},{"n":"Tropical Ocean Sunset","c":["FF6945","FF9D38","F7E9E8","FEA5A1","06629E","043C76"]},{"n":"Toasted Almond Cream","c":["FFFFFF","EFD6BD","E7C29C","E3B88B","DEAD7A","0F0D16"]},{"n":"Peach Sage Linen","c":["FFF0E3","FED1AB","E9EBEF","ECD59D","8AC4BB","22252F"]},{"n":"Harbor Clay Neutrals","c":["003443","D2DEDE","E3CCB1","D8D4BF","FCF8EF","70361B"]},{"n":"Driftwood Navy Sun","c":["E7D8C4","594835","374757","7FE4D0","001F53","FFE672"]},{"n":"Lemon Frost Midnight","c":["FEFFAC","FFE6E8","0D1321","A3DFFF","CEE2FE","F4F6FC"]},{"n":"Garden Peach Harvest","c":["386641","6A994E","A7C957","FBF7EF","FFC09F","512D38"]},{"n":"Midnight Cocoa Blush","c":["EAF3FF","CEE2FE","FDD9DC","FFE6E8","0D1321","6C3F14"]},{"n":"Cocoa Sky Blush","c":["EAF3FF","CEE2FE","FDD9DC","FFE6E8","145DA0","6C3F14"]},{"n":"Electric Rainbow Delight","c":["FF5CA8","FF1482","96009E","002266","1FD2FF","85E7FF"]},{"n":"My new palette 5","c":["040A14","232833","FFFDED","247BA0","0E192F","BB0A21"]},{"n":"My new palette 6","c":["611920","F2ECDF","DEA193","FFFFFF","0B0909","E1BD3D"]}];
 
 /* ---------- Color math ---------- */
 const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
