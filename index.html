@@ -10,13 +10,13 @@
 <style>
 :root{
   --ground:#f4f4f6; --panel:#ffffff; --ink:#18181f; --muted:#62626e; --line:#e2e2e8; --hover:#ececf1;
-  --accent:#2f5bea; --accent-ink:#ffffff; --browse:#0f7a6b; --browse-ink:#ffffff; --shadow:0 6px 24px rgba(20,20,40,.12);
+  --accent:#2f5bea; --accent-ink:#ffffff; --gen:#6a3fd6; --gen2:#5a31c2; --gen-ink:#ffffff; --shuf:#c2410c; --shuf-ink:#ffffff; --dec-bg:#eef2ff; --grp-bg:#f1ecfd; --browse:#0f7a6b; --browse-ink:#ffffff; --shadow:0 6px 24px rgba(20,20,40,.12);
   --font: Aptos, "Figtree", "Segoe UI", system-ui, sans-serif;
 }
 @media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){ --ground:#141419; --panel:#1f1f27; --ink:#ededf3; --muted:#a3a3b1; --line:#33333e; --hover:#2a2a34; --accent:#7d9bff; --accent-ink:#0e1020; --browse:#4fd1bd; --browse-ink:#0b1d1a; --shadow:0 6px 24px rgba(0,0,0,.5); }
+  :root:not([data-theme="light"]){ --ground:#141419; --panel:#1f1f27; --ink:#ededf3; --muted:#a3a3b1; --line:#33333e; --hover:#2a2a34; --accent:#7d9bff; --accent-ink:#0e1020; --gen:#b39dff; --gen2:#a28af5; --gen-ink:#170b33; --shuf:#fb923c; --shuf-ink:#1f0d00; --dec-bg:#1c2140; --grp-bg:#261d3d; --browse:#4fd1bd; --browse-ink:#0b1d1a; --shadow:0 6px 24px rgba(0,0,0,.5); }
 }
-:root[data-theme="dark"]{ --ground:#141419; --panel:#1f1f27; --ink:#ededf3; --muted:#a3a3b1; --line:#33333e; --hover:#2a2a34; --accent:#7d9bff; --accent-ink:#0e1020; --browse:#4fd1bd; --browse-ink:#0b1d1a; --shadow:0 6px 24px rgba(0,0,0,.5); }
+:root[data-theme="dark"]{ --ground:#141419; --panel:#1f1f27; --ink:#ededf3; --muted:#a3a3b1; --line:#33333e; --hover:#2a2a34; --accent:#7d9bff; --accent-ink:#0e1020; --gen:#b39dff; --gen2:#a28af5; --gen-ink:#170b33; --shuf:#fb923c; --shuf-ink:#1f0d00; --dec-bg:#1c2140; --grp-bg:#261d3d; --browse:#4fd1bd; --browse-ink:#0b1d1a; --shadow:0 6px 24px rgba(0,0,0,.5); }
 
 *{box-sizing:border-box}
 body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--font);font-size:14px;line-height:1.45}
@@ -172,6 +172,7 @@ body.zoomed{overflow:hidden}
 .zoom[hidden],.pop[hidden],.toast[hidden],.tb[hidden],.tools [hidden]{display:none}
 
 @media (max-width:640px){
+  .tsep{display:none}
   h1{font-size:28px}
   #modeLbl{display:none}
   .toast{bottom:210px}
@@ -183,6 +184,108 @@ body.zoomed{overflow:hidden}
 .tb.browse[aria-expanded="true"]{box-shadow:0 0 0 2px var(--panel),0 0 0 4px var(--browse)}
 .favhead{display:flex;align-items:center;gap:10px;margin-bottom:4px}.favhead h3{margin:0}.favhead .tb{padding:5px 10px;font-size:12px}
 #bpFav[hidden],#bpLoad[hidden],#favOpen[hidden]{display:none}
+
+/* Mood guide (hover tooltip beside Generate) */
+.mood-wrap{position:relative;display:inline-flex}
+.mood-tip{display:none;position:fixed;z-index:35;width:min(680px,calc(100vw - 32px));max-height:min(560px,calc(100vh - 150px));overflow:auto;overscroll-behavior:contain;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);padding:14px 16px;text-align:left;white-space:normal;font-weight:400}
+.mood-tip::after{content:"";position:fixed;left:var(--bx,0);width:var(--bw,0);top:var(--by,0);height:var(--bh,0)}
+.mood-wrap.show .mood-tip{display:block}
+.mood-tip h3{margin:0 0 4px;font-size:14px;font-weight:800}
+.mood-tip h4{margin:14px 0 6px;font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.mood-tip p{margin:0 0 8px;font-size:12px;color:var(--muted)}
+.mt{width:100%;border-collapse:collapse;font-size:12px;line-height:1.35}
+.mt th{text-align:left;font-size:11px;font-weight:800;color:var(--muted);padding:4px 6px;border-bottom:1px solid var(--line);vertical-align:bottom}
+.mt td{padding:6px;border-bottom:1px solid var(--line);vertical-align:top}
+.mt td:first-child{font-weight:700;min-width:92px}
+.mstrip{display:flex;width:84px;height:12px;border-radius:3px;overflow:hidden;margin-top:4px;padding:0;border:1px solid var(--line);cursor:pointer;background:none}
+.mstrip b{flex:1}
+.mstrip:hover{outline:2px solid var(--accent);outline-offset:1px}
+.eras{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:6px 14px;font-size:12px}
+.eras div{display:flex;flex-direction:column}
+.eras b{font-weight:700}
+.mnarrow{display:none}
+@media (max-width:640px){.mood-tip .mnarrow{display:block}}
+.mtw{overflow-x:auto;margin:0 -4px;padding:0 4px}
+@media (max-width:640px){.mt{min-width:600px}}
+.browse-list .bgh{font-size:12.5px;font-weight:800;letter-spacing:0;color:var(--muted);margin:10px 2px 0}
+
+.mood-use{display:block;margin-top:5px;border:0;background:none;padding:0;color:var(--accent);font-size:11px;font-weight:700;cursor:pointer;text-align:left}
+.mood-use:hover{text-decoration:underline}
+.erapick{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;font-size:12px;margin-bottom:8px}
+.erapick select{border:1px solid var(--line);background:var(--ground);border-radius:8px;padding:5px 8px;font-weight:700}
+.erastrips{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin-bottom:10px;font-size:12px}
+.erastrips div{display:flex;flex-direction:column}
+.gtabs{margin:0 0 8px}
+#gtHarmony[hidden],#gtMood[hidden],#decadeRow[hidden]{display:none}
+#decadeRow select{width:100%;border:1px solid var(--line);background:var(--ground);border-radius:8px;padding:7px 9px}
+
+.tsep{width:1px;align-self:stretch;background:var(--line);margin:2px 2px}
+.tgroup{display:inline-flex}
+.tb.gen,.tb.gen:hover{background:var(--gen);color:var(--gen-ink);border-color:var(--gen)}
+.tb.gen:hover,.tb.shuf:hover{filter:brightness(1.08)}
+.tb.gen:not(.caret){border-radius:8px 0 0 8px}
+.tb.caret.gen{margin-left:0;border-radius:0 8px 8px 0;border-left:1px solid rgba(255,255,255,.35);background:var(--gen2);border-color:var(--gen2)}
+.tb.shuf,.tb.shuf:hover{background:var(--shuf);color:var(--shuf-ink);border-color:var(--shuf)}
+.tb.gen[aria-expanded="true"]{background:var(--gen2);border-color:var(--gen2);box-shadow:0 0 0 2px var(--panel),0 0 0 4px var(--gen)}
+.mhead{display:flex;align-items:center;justify-content:space-between;margin:0 2px 4px;font-size:12.5px;font-weight:800;color:var(--muted);letter-spacing:.06em}
+.info-i{width:26px;height:26px;border-radius:50%;border:1px solid var(--line);background:var(--ground);color:var(--ink);display:grid;place-items:center;cursor:pointer;padding:0}
+.info-i svg{width:16px;height:16px}
+.info-i:hover,.mood-wrap.show .info-i{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+#decadeRow{margin:4px 0 6px;border:2px solid var(--accent);border-radius:10px;background:var(--dec-bg);padding:8px}
+.dhead{font-size:12.5px;font-weight:800;color:var(--accent);letter-spacing:0;margin:0 0 6px 4px}
+.mhead .mood-tip{text-transform:none;letter-spacing:normal;font-size:14px;font-weight:400;color:var(--ink)}
+.tiphead{display:flex;justify-content:space-between;align-items:center}
+.info-x{width:28px;height:28px;border-radius:50%;border:1px solid var(--line);background:var(--ground);color:var(--ink);font-size:18px;line-height:1;cursor:pointer}
+.dlist{display:flex;flex-direction:column;gap:2px;max-height:230px;overflow:auto}
+.dlist button{display:flex;justify-content:space-between;align-items:center;gap:8px;border:0;background:none;border-radius:8px;padding:6px 8px;cursor:pointer;font-weight:700;text-align:left}
+.dlist button:hover{background:var(--hover)}
+.dlist button small{display:block;font-weight:500;font-size:11px;color:var(--muted)}
+.dlist button[aria-checked="true"]{background:var(--accent);color:var(--accent-ink)}
+.dlist button[aria-checked="true"] small{color:inherit;opacity:.9}
+.chev{display:grid;place-items:center;width:22px;height:22px;border-radius:6px;background:var(--ground);border:1px solid var(--line);flex:none}
+.chev svg{width:14px;height:14px;transition:transform .15s}
+.chev.open{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.chev.open svg{transform:rotate(90deg)}
+@media (prefers-reduced-motion: reduce){.chev svg{transition:none}}
+.mgrp{font-size:12.5px;font-weight:800;letter-spacing:0;color:var(--gen);background:var(--grp-bg);border-left:3px solid var(--gen);border-radius:0 6px 6px 0;padding:4px 8px;margin:12px 2px 4px}
+
+.swre{position:absolute;top:4px;right:4px;width:26px;height:26px;border-radius:50%;border:0;display:none;place-items:center;cursor:pointer;padding:0;z-index:2}
+.swre svg{width:15px;height:15px}
+.swre:hover{filter:brightness(1.15);transform:scale(1.08)}
+@media (hover:hover){.swwrap:hover:not(.dragging) .swre{display:grid}}
+.swre:focus-visible{display:grid}
+body.dragging-sw .swre{display:none!important}
+
+.pibox{width:min(640px,100%)}
+.pistrip{display:flex;width:84px;height:56px;border-radius:10px;overflow:hidden;flex:none;border:1px solid rgba(0,0,0,.1)}
+.pistrip i{flex:1}
+.verdict{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;border:1px solid var(--line)}
+.verdict b{font-size:15px}
+.verdict .rate{margin-left:0}
+.checks{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}
+.checks li{display:flex;gap:8px;align-items:flex-start;font-size:13px;line-height:1.4}
+.checks li .ck{flex:none;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:800}
+.ck.good{background:#DDF3E4;color:#11562B}.ck.ok{background:#FFF1C9;color:#6B4B00}
+.checks li b{font-weight:700}
+.pairs{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px}
+.pairs div{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:8px;padding:6px}
+.pairs .aa{width:40px;height:32px;border-radius:6px;display:grid;place-items:center;font-weight:800;flex:none}
+.pairs small{display:block;color:var(--muted);font-size:11px}
+.pairs .rate{margin-left:auto}
+.cvd{display:flex;flex-direction:column;gap:6px}
+.cvd div{display:grid;grid-template-columns:100px 1fr;align-items:center;gap:8px;font-size:12px;font-weight:700}
+.cvd .row5{display:flex;height:22px;border-radius:6px;overflow:hidden}
+.cvd .row5 i{flex:1}
+.cvd p{grid-column:2;margin:0;font-weight:500;color:var(--muted);font-size:11.5px}
+.alts{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px}
+.alts button{display:flex;flex-direction:column;gap:5px;border:1px solid var(--line);background:var(--ground);border-radius:8px;padding:7px 8px;cursor:pointer;text-align:left}
+.alts button:hover{border-color:var(--muted)}
+.alts .row5{display:flex;height:18px;border-radius:4px;overflow:hidden}
+.alts .row5 i{flex:1}
+.alts span{font-size:12px;font-weight:700}
+.alts small{color:var(--muted);font-weight:500}
+.imph{margin:16px 0 0!important;padding-top:12px;border-top:1px solid var(--line)}
+.tb.primary[aria-expanded="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);box-shadow:0 0 0 2px var(--panel),0 0 0 4px var(--accent)}
 </style>
 </head>
 <body>
@@ -208,15 +311,18 @@ body.zoomed{overflow:hidden}
     </div>
     <span class="count" id="count"></span>
     <div class="tools">
-      <button class="tb" id="shuffleBtn" title="Shuffle color order"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 7h3c4 0 6 10 10 10h5M3 17h3c1.6 0 2.8-1.6 3.9-3.6M14.1 9.6C15.2 8.1 16.3 7 18 7h3M18 4l3 3-3 3M18 14l3 3-3 3"/></svg><span class="lbl">Shuffle</span></button>
+      <button class="tb" id="saveBtn" aria-expanded="false" title="Save this palette to your favorites" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/></svg><span class="lbl">Save</span></button>
+      <span class="tsep" aria-hidden="true"></span>
+      <button class="tb shuf" id="shuffleBtn" title="Shuffle color order"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 7h3c4 0 6 10 10 10h5M3 17h3c1.6 0 2.8-1.6 3.9-3.6M14.1 9.6C15.2 8.1 16.3 7 18 7h3M18 4l3 3-3 3M18 14l3 3-3 3"/></svg><span class="lbl">Shuffle</span></button>
+      <span class="tgroup"><button class="tb gen" id="genBtn" title="Generate new colors (space bar). Locked colors stay. Use the menu beside it to pick a harmony or a mood."><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/></svg><span class="lbl">Generate</span></button><button class="tb caret gen" id="modeBtn" aria-expanded="false" aria-haspopup="true" title="Choose how colors are generated"><span id="modeLbl">Auto</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg></button></span>
+      <span class="tsep" aria-hidden="true"></span>
       <button class="tb" id="adjBtn" aria-expanded="false" title="Adjust hue, saturation, brightness, temperature"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg><span class="lbl">Adjust</span></button>
       <button class="tb" id="undoBtn" title="Undo" aria-label="Undo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/></svg></button>
       <button class="tb" id="redoBtn" title="Redo" aria-label="Redo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m15 14 5-5-5-5"/><path d="M20 9H10a6 6 0 0 0 0 12h3"/></svg></button>
-      <button class="tb" id="genBtn" title="Generate new colors (space bar). Locked colors stay. Use the menu beside it to pick a color harmony."><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/></svg><span class="lbl">Generate</span></button>
-      <button class="tb caret" id="modeBtn" aria-expanded="false" aria-haspopup="true" title="Choose how colors are generated"><span id="modeLbl">Auto</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg></button>
-      <button class="tb" id="saveBtn" aria-expanded="false" title="Save this palette to your favorites" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/></svg><span class="lbl">Save</span></button>
+      <span class="tsep" aria-hidden="true"></span>
       <button class="tb browse" id="browseBtn" aria-expanded="false" title="Load one of your palettes or paste colors"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 4v16"/></svg><span class="lbl">Browse</span></button>
-      <button class="tb primary" id="exportBtn" aria-expanded="false" title="Copy the palette"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 15V3M7 8l5-5 5 5M5 14v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"/></svg><span class="lbl">Export</span></button>
+      <button class="tb primary" id="exportBtn" aria-expanded="false" title="Export or import a palette"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 20V4M3 8l4-4 4 4M17 4v16M13 16l4 4 4-4"/></svg><span class="lbl">Export/Import</span></button>
+      <button class="tb" id="pinfoBtn" title="Palette Analysis: cohesion, accessibility, and alternatives"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg><span class="lbl">Palette Analysis</span></button>
     </div>
   </div>
 </div>
@@ -229,11 +335,12 @@ body.zoomed{overflow:hidden}
   </div>
   <div class="btns">
     <button class="tb" id="lockBtn">Lock</button>
+    <button class="tb shuf" id="eReroll">Shuffle Color</button>
     <button class="tb" id="eContrast">Contrast</button>
     <button class="tb" id="eShades">Shades</button>
-    <button class="tb" id="eInfo">Color info</button>
+    <button class="tb" id="eInfo">Color Info</button>
     <button class="tb" id="eFav" hidden>Favorite</button>
-    <button class="tb" id="eCopy">Copy hex</button>
+    <button class="tb" id="eCopy">Copy Hex</button>
     <button class="tb" id="delBtn">Remove</button>
   </div>
   <p class="note">Locked colors stay put when you generate new colors. Drag a color in the bar to move it.</p>
@@ -244,7 +351,7 @@ body.zoomed{overflow:hidden}
 <div class="pop" id="shadesPop" hidden role="dialog" aria-label="Shades"><h3 id="sTitle">Shades</h3><div class="shades" id="sBody"></div><p class="note">Click a shade to use it.</p></div>
 
 <div class="pop" id="adjPop" hidden role="dialog" aria-label="Adjust palette">
-  <h3>Adjust palette</h3>
+  <h3>Adjust Palette</h3>
   <div class="slider-h"><span>Hue</span><output id="o-h">0</output></div>
   <input type="range" id="s-h" min="-180" max="180" value="0" aria-label="Hue">
   <div class="slider-h"><span>Saturation</span><output id="o-s">0</output></div>
@@ -253,9 +360,9 @@ body.zoomed{overflow:hidden}
   <input type="range" id="s-b" min="-100" max="100" value="0" aria-label="Brightness">
   <div class="slider-h"><span>Temperature</span><output id="o-t">0</output></div>
   <input type="range" id="s-t" min="-100" max="100" value="0" aria-label="Temperature">
-  <div class="slider-h" style="margin-top:14px"><span>Text contrast</span></div>
+  <div class="slider-h" style="margin-top:14px"><span>Text Contrast</span></div>
   <div class="seg3" role="radiogroup" aria-label="Text contrast rule" id="ruleSeg">
-    <button role="radio" id="rule-auto" data-r="auto">By text size</button>
+    <button role="radio" id="rule-auto" data-r="auto">By Text Size</button>
     <button role="radio" id="rule-large" data-r="large">Large (3:1)</button>
     <button role="radio" id="rule-small" data-r="small">Small (4.5:1)</button>
   </div>
@@ -265,48 +372,60 @@ body.zoomed{overflow:hidden}
 </div>
 
 <div class="pop" id="savePop" hidden role="dialog" aria-label="Save palette">
-  <h3>Save this palette</h3>
+  <h3>Save This Palette</h3>
   <label for="saveName">Name</label>
   <input type="text" id="saveName" maxlength="60">
   <div class="favcolors" id="savePreview" aria-hidden="true"></div>
-  <div class="btns"><button class="tb primary" id="saveGo">Save palette</button></div>
+  <div class="btns"><button class="tb primary" id="saveGo">Save Palette</button></div>
   <p class="note" id="saveNote">Saved palettes appear under Browse, in this browser. Use Back up under Browse to keep a copy.</p>
 </div>
 
 <div class="pop" id="browsePop" hidden role="dialog" aria-label="Browse palettes">
   <div id="bpLoad">
-    <h3>Load a palette</h3>
-    <label>Palette library</label>
+    <h3>Load a Palette</h3>
+    <label>Palette Library</label>
     <div class="browse-list" id="browseList"></div>
-    <label for="pasteBox">Paste hex codes or a palette link</label>
-    <textarea id="pasteBox" placeholder="880d1e dd2d4a f26a8d"></textarea>
-    <div class="btns"><button class="tb primary" id="pasteGo">Load pasted colors</button><button class="tb" id="favOpen" hidden>My favorites</button></div>
+    <div class="btns"><button class="tb" id="favOpen" hidden>My Favorites</button></div>
   </div>
   <div id="bpFav" hidden>
-    <div class="favhead"><button class="tb" id="favBack" aria-label="Back to Load a palette">&larr; Back</button><h3>My favorites</h3></div>
+    <div class="favhead"><button class="tb" id="favBack" aria-label="Back to Load a palette">&larr; Back</button><h3>My Favorites</h3></div>
   <div id="favSection"></div><input type="file" id="bkFile" accept=".json,.txt,application/json,text/plain" hidden>
   </div>
 </div>
 
-<div class="pop" id="modePop" hidden role="dialog" aria-label="Color harmony"><h3>Generate using</h3><div class="menu" id="modeMenu" role="menu"></div><p class="note">Locked colors stay put. The first locked color sets the starting hue.</p></div>
+<div class="pop" id="modePop" hidden role="dialog" aria-label="Color harmony"><h3>Generate Using</h3><div class="seg3 gtabs" role="tablist" id="genTabs"><button role="tab" data-gt="harmony">Harmony</button><button role="tab" data-gt="mood">Mood</button></div><div id="gtHarmony"><div class="menu" id="modeMenu" role="menu"></div><p class="note" id="harmNote">Locked colors stay put. The first locked color sets the starting hue.</p></div><div id="gtMood" hidden><div class="mhead"><span>Pick a Mood</span><span class="mood-wrap" id="moodWrap"><button class="info-i" id="moodBtn" title="Mood guide" type="button" aria-expanded="false" aria-controls="moodTip" aria-label="Palette moods guide"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg></button><div class="mood-tip" id="moodTip" role="dialog" aria-label="Palette moods guide">
+<div class="tiphead"><h3>Palette Moods</h3><button type="button" class="info-x" id="tipClose" aria-label="Close the mood guide">&times;</button></div>
+<p>How each mood usually sets hue, saturation, lightness, and contrast. These are common design habits, not fixed rules. Click a color strip to load an example.</p><p class="mnarrow">On a small screen, scroll the table sideways to see every column.</p>
+<div class="mtw"><table class="mt"><thead><tr><th>Mood</th><th>Hues</th><th>Saturation</th><th>Lightness</th><th>Contrast</th><th>Typical scheme</th></tr></thead><tbody><tr><td>Elegant<button type="button" class="mstrip" data-mood="1B1A24,3A3445,8A7356,D8C8A8,F4EFE6" data-mname="Midnight Champagne" title="Load Midnight Champagne" aria-label="Load example palette Midnight Champagne"><b style="background:#1B1A24"></b><b style="background:#3A3445"></b><b style="background:#8A7356"></b><b style="background:#D8C8A8"></b><b style="background:#F4EFE6"></b></button><button type="button" class="mood-use" data-setmood="elegant">Use This Mood</button></td><td>Few; neutrals plus one muted color (plum, navy, bronze)</td><td>Low</td><td>Mostly very dark or very light</td><td>High between dark and light, few in-between tones</td><td>Monochromatic or near-neutral with one accent</td></tr><tr><td>Bold<button type="button" class="mstrip" data-mood="0D0D0D,D62828,F7B801,003F88,FFFFFF" data-mname="Red Ink Poster" title="Load Red Ink Poster" aria-label="Load example palette Red Ink Poster"><b style="background:#0D0D0D"></b><b style="background:#D62828"></b><b style="background:#F7B801"></b><b style="background:#003F88"></b><b style="background:#FFFFFF"></b></button><button type="button" class="mood-use" data-setmood="bold">Use This Mood</button></td><td>Two or three strong hues plus black and white</td><td>High</td><td>Very dark and very light</td><td>Highest</td><td>Complementary or triadic</td></tr><tr><td>Bright<button type="button" class="mstrip" data-mood="FF4D4D,FFB000,3DDC84,2D9CDB,9B51E0" data-mname="Sunny Rainbow Pop" title="Load Sunny Rainbow Pop" aria-label="Load example palette Sunny Rainbow Pop"><b style="background:#FF4D4D"></b><b style="background:#FFB000"></b><b style="background:#3DDC84"></b><b style="background:#2D9CDB"></b><b style="background:#9B51E0"></b></button><button type="button" class="mood-use" data-setmood="bright">Use This Mood</button></td><td>Many, spread around the wheel</td><td>High</td><td>Middle</td><td>Medium</td><td>Triadic or rainbow</td></tr><tr><td>Fun<button type="button" class="mstrip" data-mood="F26CA7,FFE156,29C7F2,3EE6C1,A06CF0" data-mname="Sprinkle Jar" title="Load Sprinkle Jar" aria-label="Load example palette Sprinkle Jar"><b style="background:#F26CA7"></b><b style="background:#FFE156"></b><b style="background:#29C7F2"></b><b style="background:#3EE6C1"></b><b style="background:#A06CF0"></b></button><button type="button" class="mood-use" data-setmood="fun">Use This Mood</button></td><td>Many; often pink, turquoise, purple, orange</td><td>High</td><td>Middle to light</td><td>Medium</td><td>Loose; hues can jump around</td></tr><tr><td>Retro<button type="button" class="mstrip" data-mood="D9A42B,8C4A2F,6E7C3A,D97A2B,F2E3C6" data-mname="Harvest Gold Kitchen" title="Load Harvest Gold Kitchen" aria-label="Load example palette Harvest Gold Kitchen"><b style="background:#D9A42B"></b><b style="background:#8C4A2F"></b><b style="background:#6E7C3A"></b><b style="background:#D97A2B"></b><b style="background:#F2E3C6"></b></button><button type="button" class="mood-use" data-setmood="retro">Use This Mood</button></td><td>Depends on the decade (pick one below)</td><td>Slightly muted</td><td>Middle</td><td>Low to medium</td><td>Analogous warm colors plus one cool color</td></tr><tr><td>Soft (Pastel)<button type="button" class="mstrip" data-mood="F8D7DA,FDF1C7,D4F1E4,CDE7F6,E6DDF5" data-mname="Morning Nursery" title="Load Morning Nursery" aria-label="Load example palette Morning Nursery"><b style="background:#F8D7DA"></b><b style="background:#FDF1C7"></b><b style="background:#D4F1E4"></b><b style="background:#CDE7F6"></b><b style="background:#E6DDF5"></b></button><button type="button" class="mood-use" data-setmood="soft">Use This Mood</button></td><td>Any</td><td>Low to medium</td><td>Very light</td><td>Low</td><td>Any; low contrast keeps it calm</td></tr><tr><td>Earthy<button type="button" class="mstrip" data-mood="2F3A2E,5B6B3A,8C6A43,C9B28A,EDE3D1" data-mname="Forest Floor" title="Load Forest Floor" aria-label="Load example palette Forest Floor"><b style="background:#2F3A2E"></b><b style="background:#5B6B3A"></b><b style="background:#8C6A43"></b><b style="background:#C9B28A"></b><b style="background:#EDE3D1"></b></button><button type="button" class="mood-use" data-setmood="earthy">Use This Mood</button></td><td>Yellow, orange, and green hues; browns</td><td>Low</td><td>Middle to dark</td><td>Low to medium</td><td>Analogous</td></tr><tr><td>Corporate<button type="button" class="mstrip" data-mood="0B2545,13315C,3E7CB1,DDE3EA,F2A900" data-mname="Steady Navy" title="Load Steady Navy" aria-label="Load example palette Steady Navy"><b style="background:#0B2545"></b><b style="background:#13315C"></b><b style="background:#3E7CB1"></b><b style="background:#DDE3EA"></b><b style="background:#F2A900"></b></button><button type="button" class="mood-use" data-setmood="corporate">Use This Mood</button></td><td>Blues and grays</td><td>Medium</td><td>Mixed</td><td>Medium to high</td><td>Monochromatic blue plus one warm accent</td></tr><tr><td>Gothic<button type="button" class="mstrip" data-mood="0D0B10,2A1F2D,5B1A2B,7C6F7F,C9C3CC" data-mname="Midnight Chapel" title="Load Midnight Chapel" aria-label="Load example palette Midnight Chapel"><b style="background:#0D0B10"></b><b style="background:#2A1F2D"></b><b style="background:#5B1A2B"></b><b style="background:#7C6F7F"></b><b style="background:#C9C3CC"></b></button><button type="button" class="mood-use" data-setmood="gothic">Use This Mood</button></td><td>Black, oxblood, plum, and pewter</td><td>Low to medium</td><td>Very dark, one pale gray</td><td>High</td><td>Near-monochrome dark with one rich accent</td></tr><tr><td>Dark Academia<button type="button" class="mstrip" data-mood="2B1D14,4A3526,1F3A2E,6B2230,E8DCC2" data-mname="Old Library" title="Load Old Library" aria-label="Load example palette Old Library"><b style="background:#2B1D14"></b><b style="background:#4A3526"></b><b style="background:#1F3A2E"></b><b style="background:#6B2230"></b><b style="background:#E8DCC2"></b></button><button type="button" class="mood-use" data-setmood="academia">Use This Mood</button></td><td>Browns, forest green, burgundy, brass, and parchment</td><td>Low</td><td>Mostly dark, one parchment light</td><td>Medium to high</td><td>Analogous warm colors plus one green</td></tr><tr><td>Jewel Tones<button type="button" class="mstrip" data-mood="0F4C3A,0F3B7A,5B2A86,9B111E,D4AF37" data-mname="Crown Jewels" title="Load Crown Jewels" aria-label="Load example palette Crown Jewels"><b style="background:#0F4C3A"></b><b style="background:#0F3B7A"></b><b style="background:#5B2A86"></b><b style="background:#9B111E"></b><b style="background:#D4AF37"></b></button><button type="button" class="mood-use" data-setmood="jewel">Use This Mood</button></td><td>Emerald, sapphire, amethyst, ruby, and gold</td><td>High</td><td>Dark to middle</td><td>Medium to high</td><td>Evenly spaced (square or tetradic) on a dark base</td></tr><tr><td>Cyberpunk<button type="button" class="mstrip" data-mood="0A0A14,1B1B3A,FF2A6D,05D9E8,F9F871" data-mname="Night City" title="Load Night City" aria-label="Load example palette Night City"><b style="background:#0A0A14"></b><b style="background:#1B1B3A"></b><b style="background:#FF2A6D"></b><b style="background:#05D9E8"></b><b style="background:#F9F871"></b></button><button type="button" class="mood-use" data-setmood="cyber">Use This Mood</button></td><td>Magenta, cyan, and acid yellow on near-black</td><td>Very high accents, low base</td><td>Very dark base, bright accents</td><td>Highest</td><td>Complementary neon on dark</td></tr><tr><td>Coastal<button type="button" class="mstrip" data-mood="F4EDE1,D9C9A8,A8D5CF,5F9EA0,1F3A5F" data-mname="Sea Glass Shore" title="Load Sea Glass Shore" aria-label="Load example palette Sea Glass Shore"><b style="background:#F4EDE1"></b><b style="background:#D9C9A8"></b><b style="background:#A8D5CF"></b><b style="background:#5F9EA0"></b><b style="background:#1F3A5F"></b></button><button type="button" class="mood-use" data-setmood="coastal">Use This Mood</button></td><td>Sand, sea glass, soft blues, and navy</td><td>Low to medium</td><td>Mostly light, one deep navy</td><td>Medium</td><td>Analogous blue-green plus sand</td></tr><tr><td>Cottagecore<button type="button" class="mstrip" data-mood="F6F0E1,C9D4B5,8FA67E,E8C4C0,F3DDA0" data-mname="Garden Gate" title="Load Garden Gate" aria-label="Load example palette Garden Gate"><b style="background:#F6F0E1"></b><b style="background:#C9D4B5"></b><b style="background:#8FA67E"></b><b style="background:#E8C4C0"></b><b style="background:#F3DDA0"></b></button><button type="button" class="mood-use" data-setmood="cottage">Use This Mood</button></td><td>Sage, cream, butter yellow, and dusty rose</td><td>Low to medium</td><td>Light to middle</td><td>Low</td><td>Analogous greens with soft warm accents</td></tr><tr><td>Boho<button type="button" class="mstrip" data-mood="C8553D,E08E45,F0C987,7B8B4E,F6EEE0" data-mname="Desert Sun" title="Load Desert Sun" aria-label="Load example palette Desert Sun"><b style="background:#C8553D"></b><b style="background:#E08E45"></b><b style="background:#F0C987"></b><b style="background:#7B8B4E"></b><b style="background:#F6EEE0"></b></button><button type="button" class="mood-use" data-setmood="boho">Use This Mood</button></td><td>Terracotta, rust, mustard, olive, and cream</td><td>Medium</td><td>Middle, one cream</td><td>Medium</td><td>Analogous warm colors plus olive</td></tr><tr><td>Scandinavian<button type="button" class="mstrip" data-mood="FAF8F4,E6E1D8,C9C1B3,9A9690,3B3C3F" data-mname="Nordic Linen" title="Load Nordic Linen" aria-label="Load example palette Nordic Linen"><b style="background:#FAF8F4"></b><b style="background:#E6E1D8"></b><b style="background:#C9C1B3"></b><b style="background:#9A9690"></b><b style="background:#3B3C3F"></b></button><button type="button" class="mood-use" data-setmood="scandi">Use This Mood</button></td><td>Warm white, greige, pale wood, gray, and charcoal</td><td>Very low</td><td>Mostly very light, one charcoal</td><td>Medium to high</td><td>Neutral monochrome</td></tr></tbody></table></div>
+<h4>Retro by Decade</h4>
+<div class="erapick"><select id="eraSel" aria-label="Decade"><option value="1920s">1920s</option><option value="1930s">1930s</option><option value="1940s">1940s</option><option value="1950s">1950s</option><option value="1960s">1960s</option><option value="1970s">1970s</option><option value="1980s">1980s</option><option value="1990s">1990s</option><option value="2000s">2000s (Y2K)</option></select><span id="eraDesc"></span></div>
+<div class="erastrips" id="eraStrips"></div>
+<button type="button" class="tb" id="eraGen">Generate a 1920s Palette</button>
+<p style="margin-top:12px">Saturation and lightness shape the mood more than hue does. Soft and bright palettes need a dark color, or black or white, for readable text.</p>
+</div></span></div><div class="menu" id="moodMenu" role="menu"></div><div id="decadeRow" hidden><div class="dhead">Pick a Decade</div><div class="dlist" id="decadeList" role="radiogroup" aria-label="Decade"></div></div><p class="note">Each mood follows the Moods guide for hue, saturation, lightness, and contrast. Locked colors stay put.</p></div></div>
 
-<div class="pop" id="exportPop" hidden role="dialog" aria-label="Export palette">
-  <h3>Copy this palette</h3>
+<div class="pop" id="exportPop" hidden role="dialog" aria-label="Export or import a palette">
+  <h3>Export This Palette</h3>
   <div class="btns" style="margin-top:0;flex-direction:column;align-items:stretch">
-    <button class="tb" data-copy="hex">Hex codes (comma separated)</button>
-    <button class="tb" data-copy="css">CSS variables</button>
-    <button class="tb" data-copy="list">One per line with #</button>
+    <button class="tb" data-copy="hex">Hex Codes (Comma Separated)</button>
+    <button class="tb" data-copy="css">CSS Variables</button>
+    <button class="tb" data-copy="list">One per Line with #</button>
   </div>
   <label for="exportOut">Preview</label>
   <textarea id="exportOut" readonly></textarea>
+  <h3 class="imph">Import a Palette</h3>
+  <label for="pasteBox">Paste Hex Codes or a Palette Link</label>
+  <textarea id="pasteBox" placeholder="880d1e dd2d4a f26a8d"></textarea>
+  <div class="btns"><button class="tb primary" id="pasteGo">Load Pasted Colors</button></div>
 </div>
 
 <div class="info" id="info" role="dialog" aria-modal="true" aria-labelledby="iName" hidden><div class="ibox"><div class="ihead"><i class="big" id="iSwatch"></i><div><h3 id="iName"></h3><p id="iHex"></p></div><button class="tb x" id="iClose">Close</button></div><div class="ibody" id="iBody"></div></div></div>
+<div class="info" id="pinfo" role="dialog" aria-modal="true" aria-labelledby="piTitle" hidden><div class="ibox pibox"><div class="ihead"><div class="pistrip" id="piStrip"></div><div><h3 id="piTitle">Palette Analysis</h3><p id="piSub"></p></div><button class="tb x" id="piClose">Close</button></div><div class="ibody" id="piBody"></div></div></div>
 <div class="zoom" id="zoom" role="dialog" aria-modal="false" aria-labelledby="zoomTitle" hidden><div class="zbox"><div class="dh"><span id="zoomTitle"></span><button class="tb" id="zoomClose">Close</button></div><div class="db" id="zoomBody"></div></div></div>
 
 <script>
 /* ---------- Built-in palette library ---------- */
-const SAVED = [{"n":"Vintage Carnival Delight","c":["376C4E","F59099","6495ED","FBFBF2","FAA598","281E5D"]},{"n":"Shimmering Citrus Dream","c":["FEE613","FF9812","E2CFEA","42BFDD","31081F","FE509D"]},{"n":"Vibrant Neon Fusion","c":["FFFC40","FABA61","FE8172","FE2FA9","3A579A","36244F"]},{"n":"Sunset Beach Vibes","c":["FFFFFF","8ECAE6","219EBC","023047","FFB703","FB8500"]},{"n":"Golden Sunrise Glow","c":["000000","14213D","FCA311","F1C47B","E5E5E5","FFFFFF"]},{"n":"Floral Fantasy Dream","c":["521835","57406E","F285BC","D9A9C1","A1C6EA","37392E"]},{"n":"Summer Sunset Bliss","c":["282D74","00528D","00A49C","B46EC8","F5828C","F5CD64"]},{"n":"Jungle Adventure Fun","c":["606C38","283618","FEFAE0","DDA15E","BC6C25","C98951"]},{"n":"Electric Boho Vibes","c":["2C3486","48B8AA","CAE8DF","F8CC0B","F4AAA7","EC5D4B"]},{"n":"Oceanic Sunset Glow","c":["8ECAE6","219EBC","023047","817425","FFB703","FB8500"]},{"n":"Tropical Ocean Sunset","c":["FF6945","FF9D38","F7E9E8","FEA5A1","06629E","043C76"]},{"n":"Toasted Almond Cream","c":["FFFFFF","EFD6BD","E7C29C","E3B88B","DEAD7A","0F0D16"]},{"n":"Peach Sage Linen","c":["FFF0E3","FED1AB","E9EBEF","ECD59D","8AC4BB","22252F"]},{"n":"Harbor Clay Neutrals","c":["003443","D2DEDE","E3CCB1","D8D4BF","FCF8EF","70361B"]},{"n":"Driftwood Navy Sun","c":["E7D8C4","594835","374757","7FE4D0","001F53","FFE672"]},{"n":"Lemon Frost Midnight","c":["FEFFAC","FFE6E8","0D1321","A3DFFF","CEE2FE","F4F6FC"]},{"n":"Garden Peach Harvest","c":["386641","6A994E","A7C957","FBF7EF","FFC09F","512D38"]},{"n":"Midnight Cocoa Blush","c":["EAF3FF","CEE2FE","FDD9DC","FFE6E8","0D1321","6C3F14"]},{"n":"Cocoa Sky Blush","c":["EAF3FF","CEE2FE","FDD9DC","FFE6E8","145DA0","6C3F14"]},{"n":"Electric Rainbow Delight","c":["FF5CA8","FF1482","96009E","002266","1FD2FF","85E7FF"]},{"n":"Crimson Harbor Night","c":["040A14","232833","FFFDED","247BA0","0E192F","BB0A21"]},{"n":"Merlot Gold Linen","c":["611920","F2ECDF","DEA193","FFFFFF","0B0909","E1BD3D"]}];
+const SAVED = [{"n":"Vintage Carnival Delight","c":["376C4E","F59099","6495ED","FBFBF2","FAA598","281E5D"]},{"n":"Shimmering Citrus Dream","c":["FEE613","FF9812","E2CFEA","42BFDD","31081F","FE509D"]},{"n":"Vibrant Neon Fusion","c":["FFFC40","FABA61","FE8172","FE2FA9","3A579A","36244F"]},{"n":"Sunset Beach Vibes","c":["FFFFFF","8ECAE6","219EBC","023047","FFB703","FB8500"]},{"n":"Golden Sunrise Glow","c":["000000","14213D","FCA311","F1C47B","E5E5E5","FFFFFF"]},{"n":"Floral Fantasy Dream","c":["521835","57406E","F285BC","D9A9C1","A1C6EA","37392E"]},{"n":"Summer Sunset Bliss","c":["282D74","00528D","00A49C","B46EC8","F5828C","F5CD64"]},{"n":"Jungle Adventure Fun","c":["606C38","283618","FEFAE0","DDA15E","BC6C25","C98951"]},{"n":"Electric Boho Vibes","c":["2C3486","48B8AA","CAE8DF","F8CC0B","F4AAA7","EC5D4B"]},{"n":"Oceanic Sunset Glow","c":["8ECAE6","219EBC","023047","817425","FFB703","FB8500"]},{"n":"Tropical Ocean Sunset","c":["FF6945","FF9D38","F7E9E8","FEA5A1","06629E","043C76"]},{"n":"Toasted Almond Cream","c":["FFFFFF","EFD6BD","E7C29C","E3B88B","DEAD7A","0F0D16"]},{"n":"Peach Sage Linen","c":["FFF0E3","FED1AB","E9EBEF","ECD59D","8AC4BB","22252F"]},{"n":"Harbor Clay Neutrals","c":["003443","D2DEDE","E3CCB1","D8D4BF","FCF8EF","70361B"]},{"n":"Driftwood Navy Sun","c":["E7D8C4","594835","374757","7FE4D0","001F53","FFE672"]},{"n":"Lemon Frost Midnight","c":["FEFFAC","FFE6E8","0D1321","A3DFFF","CEE2FE","F4F6FC"]},{"n":"Garden Peach Harvest","c":["386641","6A994E","A7C957","FBF7EF","FFC09F","512D38"]},{"n":"Midnight Cocoa Blush","c":["EAF3FF","CEE2FE","FDD9DC","FFE6E8","0D1321","6C3F14"]},{"n":"Cocoa Sky Blush","c":["EAF3FF","CEE2FE","FDD9DC","FFE6E8","145DA0","6C3F14"]},{"n":"Electric Rainbow Delight","c":["FF5CA8","FF1482","96009E","002266","1FD2FF","85E7FF"]},{"n":"Crimson Harbor Night","c":["040A14","232833","FFFDED","247BA0","0E192F","BB0A21"]},{"n":"Merlot Gold Linen","c":["611920","F2ECDF","DEA193","FFFFFF","0B0909","E1BD3D"]},{"n":"Midnight Champagne","c":["1B1A24","3A3445","8A7356","D8C8A8","F4EFE6"],"g":"Elegant"},{"n":"Plum Velvet Pearl","c":["2B1B2E","5E3B5C","A58CA1","E6DCE3","B89B5E"],"g":"Elegant"},{"n":"Navy Bronze Linen","c":["14213D","34435E","9C7A4E","E9E2D6","FAF8F3"],"g":"Elegant"},{"n":"Charcoal Sage Ivory","c":["222623","4F5A52","9AA79C","E8E6DD","C2A878"],"g":"Elegant"},{"n":"Red Ink Poster","c":["0D0D0D","D62828","F7B801","003F88","FFFFFF"],"g":"Bold"},{"n":"Cobalt Punch","c":["111827","1D4ED8","F43F5E","FACC15","F9FAFB"],"g":"Bold"},{"n":"Emerald Flame","c":["0B1F1A","047857","EA580C","FDE68A","FFFBF0"],"g":"Bold"},{"n":"Magenta Black Gold","c":["121212","C2185B","7B1FA2","FFC107","FAFAFA"],"g":"Bold"},{"n":"Sunny Rainbow Pop","c":["FF4D4D","FFB000","3DDC84","2D9CDB","9B51E0"],"g":"Bright"},{"n":"Tropical Fruit Stand","c":["FF6B35","F7C548","2EC4B6","E71D73","5B5FEF"],"g":"Bright"},{"n":"Summer Kite","c":["00B4D8","FFD60A","FF5D8F","70E000","7B2CBF"],"g":"Bright"},{"n":"Crayon Box","c":["E8413C","F5A04A","2FA38F","4A7FB0","FFD35C"],"g":"Bright"},{"n":"Sherbet Stack","c":["FF7BAC","FFA46B","FFDD6E","D4F46E","6FCBF7"],"g":"Fun"},{"n":"Sprinkle Jar","c":["F26CA7","FFE156","29C7F2","3EE6C1","A06CF0"],"g":"Fun"},{"n":"Popsicle Stand","c":["FF477E","FF9E00","2EC4B6","B8F2E6","6A4CFF"],"g":"Fun"},{"n":"Confetti Picnic","c":["F25C78","FFC857","3BCEAC","4C6EF5","2E2A4F"],"g":"Fun"},{"n":"Morning Nursery","c":["F8D7DA","FDF1C7","D4F1E4","CDE7F6","E6DDF5"],"g":"Soft"},{"n":"Peony Mist","c":["F6E1E6","EAC7D0","D7E3F0","F3EBDD","C9D8C5"],"g":"Soft"},{"n":"Lilac Cloud","c":["E8E1F5","D3CCEB","F5E6EE","DDEFF2","FBF7EE"],"g":"Soft"},{"n":"Seafoam Blush","c":["DDF3EE","BFE3DB","FBE3DA","F7D1CD","FFF6EC"],"g":"Soft"},{"n":"Forest Floor","c":["2F3A2E","5B6B3A","8C6A43","C9B28A","EDE3D1"],"g":"Earthy"},{"n":"Canyon Clay","c":["6B3E26","B5653E","D9A066","E8D5B7","4F5D46"],"g":"Earthy"},{"n":"Moss and Stone","c":["3E4A3D","7A8B69","A8A18D","D8D2C2","5C4A3A"],"g":"Earthy"},{"n":"Harvest Field","c":["7F5539","A68A64","C2A15C","6B705C","EDE0D4"],"g":"Earthy"},{"n":"Steady Navy","c":["0B2545","13315C","3E7CB1","DDE3EA","F2A900"],"g":"Corporate"},{"n":"Slate Teal","c":["1F2A36","2F5D62","5E9EA0","E4E9EC","E07A5F"],"g":"Corporate"},{"n":"Trust Blue Gray","c":["102A43","243B53","486581","D9E2EC","2BB0ED"],"g":"Corporate"},{"n":"Graphite Green","c":["212529","495057","2D6A4F","E9ECEF","74C69D"],"g":"Corporate"},{"n":"Midnight Chapel","c":["0D0B10","2A1F2D","5B1A2B","7C6F7F","C9C3CC"],"g":"Gothic"},{"n":"Raven and Rose","c":["111014","3B0D1C","6E1F3A","4A4452","D8D0D6"],"g":"Gothic"},{"n":"Velvet Crypt","c":["1A1320","3F1D4A","6B2D5C","8A8D93","E6E1E8"],"g":"Gothic"},{"n":"Iron Gate","c":["141414","2E2E33","5A5F66","7A1C1C","BFB8B0"],"g":"Gothic"},{"n":"Old Library","c":["2B1D14","4A3526","1F3A2E","6B2230","E8DCC2"],"g":"Dark Academia"},{"n":"Brass and Ink","c":["1C1B22","3B2F2A","A67C3D","5C1F2A","D9CBB0"],"g":"Dark Academia"},{"n":"Tweed Study","c":["3A3226","6B5B45","2F4A3A","8C6A4F","EFE5D0"],"g":"Dark Academia"},{"n":"Candlelit Archive","c":["241A12","5A3E2B","7D5A2E","3D4B3A","F2E6CC"],"g":"Dark Academia"},{"n":"Crown Jewels","c":["0F4C3A","0F3B7A","5B2A86","9B111E","D4AF37"],"g":"Jewel Tones"},{"n":"Sapphire Night","c":["0B132B","1C3F94","0E7C66","7B2D8E","E0B84C"],"g":"Jewel Tones"},{"n":"Ruby Lounge","c":["1A0B14","8E0E2E","13604A","34306E","C8963E"],"g":"Jewel Tones"},{"n":"Amethyst Vault","c":["1E1030","5E2B97","0F6E7A","A3174F","E7C873"],"g":"Jewel Tones"},{"n":"Night City","c":["0A0A14","1B1B3A","FF2A6D","05D9E8","F9F871"],"g":"Cyberpunk"},{"n":"Neon Rain","c":["0D0221","261447","FF3864","2DE2E6","F6019D"],"g":"Cyberpunk"},{"n":"Glitch Grid","c":["07070F","16213E","00FF9F","BD00FF","FFE600"],"g":"Cyberpunk"},{"n":"Chrome Alley","c":["101018","2C2C44","9A9AB0","00E0FF","FF3CAC"],"g":"Cyberpunk"},{"n":"Sea Glass Shore","c":["F4EDE1","D9C9A8","A8D5CF","5F9EA0","1F3A5F"],"g":"Coastal"},{"n":"Driftwood Dock","c":["EFE8DC","B8A48A","8FB8C9","3F6E8C","16324F"],"g":"Coastal"},{"n":"Harbor Morning","c":["FAF7F0","CFE3E6","7FB3C4","C2B280","23395B"],"g":"Coastal"},{"n":"Salt Marsh","c":["EDEAE0","B9C4B0","8AAFA6","4E7A7A","2C3E50"],"g":"Coastal"},{"n":"Garden Gate","c":["F6F0E1","C9D4B5","8FA67E","E8C4C0","F3DDA0"],"g":"Cottagecore"},{"n":"Wildflower Meadow","c":["FBF6EA","B5C99A","D9A5B3","F2D98C","7D8F69"],"g":"Cottagecore"},{"n":"Linen and Lavender","c":["F7F3EA","D8CFE6","A9B99A","E9D7B8","8E7A9E"],"g":"Cottagecore"},{"n":"Honey Cottage","c":["FFF8E7","F2D28B","C7A27C","A3B18A","D9A6A1"],"g":"Cottagecore"},{"n":"Desert Sun","c":["C8553D","E08E45","F0C987","7B8B4E","F6EEE0"],"g":"Boho"},{"n":"Macrame Morning","c":["B5613A","D9A05B","E8D5B5","6F7C4A","3E2C23"],"g":"Boho"},{"n":"Sunset Canyon","c":["A63D2B","D4793A","E3B15C","8A9A5B","F2E3D0"],"g":"Boho"},{"n":"Terracotta Market","c":["9C4A2F","C9744B","E6B566","5E6B3D","EFE2CE"],"g":"Boho"},{"n":"Nordic Linen","c":["FAF8F4","E6E1D8","C9C1B3","9A9690","3B3C3F"],"g":"Scandinavian"},{"n":"Birch and Stone","c":["F4F2EE","DAD6CE","B8A98F","8A8D8F","2E3033"],"g":"Scandinavian"},{"n":"Quiet Cabin","c":["F7F5F0","E3DFD6","CBBBA0","A4A9A6","45484C"],"g":"Scandinavian"},{"n":"Fjord Fog","c":["F5F6F4","DDE2E1","B7C0BE","8E9A9B","2F3A3D"],"g":"Scandinavian"},{"n":"Gatsby Gold","c":["0E0E0E","C9A227","1F4E3D","F2E8CF","7A1E2C"],"g":"Retro 1920s"},{"n":"Deco Jade Lounge","c":["123C38","2E8B75","D4AF37","EFE6D2","1A1A1A"],"g":"Retro 1920s"},{"n":"Flapper Blush","c":["2B2A33","B76E79","E8C4C4","C0A062","F6EFE4"],"g":"Retro 1920s"},{"n":"Speakeasy Silver","c":["1C1C24","4A4E69","A7A9AC","D9D4C7","8C2F39"],"g":"Retro 1920s"},{"n":"Jadeite Kitchen","c":["A8D5BA","E9E4C9","5A7D6A","C94C3E","F3EFE0"],"g":"Retro 1930s"},{"n":"Bakelite Butterscotch","c":["C8791E","E3B04B","7D2E1F","2F4F3E","F1E6CF"],"g":"Retro 1930s"},{"n":"Streamline Cream","c":["F0E6D2","B9C7B1","4C6A73","D98C5F","3B3A36"],"g":"Retro 1930s"},{"n":"Radio Days","c":["5C3A21","A0522D","D8B384","6F7F5C","EFE3C8"],"g":"Retro 1930s"},{"n":"Victory Garden","c":["4B5320","8A9A5B","B22234","1C2E4A","EDE4CC"],"g":"Retro 1940s"},{"n":"Home Front","c":["2F3E55","A33B3B","D9C9A3","6C7A5B","F4EEDD"],"g":"Retro 1940s"},{"n":"Utility Khaki","c":["6B6B47","C3B091","8B4513","3B4A5A","EFE8D8"],"g":"Retro 1940s"},{"n":"Swing Dance","c":["7A1F2B","D96C4A","E9C46A","2E4057","F7F0E3"],"g":"Retro 1940s"},{"n":"Diner Booth","c":["F4A6B8","8FD3C9","FDE68A","D7263D","F9F5EC"],"g":"Retro 1950s"},{"n":"Atomic Kitchen","c":["3BB3A6","F28C8C","F6D365","2B2D42","F5F1E6"],"g":"Retro 1950s"},{"n":"Poodle Skirt","c":["F7C5D0","B5E3E0","6FA8DC","E5E0C8","2F3E46"],"g":"Retro 1950s"},{"n":"Chrome and Cherry","c":["C1121F","5DBCD2","FFF3D6","1E1E24","BFC0C0"],"g":"Retro 1950s"},{"n":"Mod Pop Art","c":["FF5E3A","FFC300","00A6A6","E0218A","101010"],"g":"Retro 1960s"},{"n":"Flower Power","c":["F47C20","F9C80E","8CC63F","E94B8A","5B2A86"],"g":"Retro 1960s"},{"n":"Space Age White","c":["F4F1EA","FF6B00","00A1C9","C9C9C9","1D1D1B"],"g":"Retro 1960s"},{"n":"Mid-Century Lounge","c":["2A6F77","E07B39","E8B63A","7C4A2D","F2E8D5"],"g":"Retro 1960s"},{"n":"Harvest Gold Kitchen","c":["D9A42B","8C4A2F","6E7C3A","D97A2B","F2E3C6"],"g":"Retro 1970s"},{"n":"Disco Sunset","c":["F28C28","E4572E","A23B72","F9C74F","3B1F2B"],"g":"Retro 1970s"},{"n":"Shag Carpet","c":["5E3A1E","A0652F","C9A15B","3F7F75","EFE0C4"],"g":"Retro 1970s"},{"n":"Avocado Den","c":["6B7F3A","A3A84E","C7792E","4A2E1F","E8DDC0"],"g":"Retro 1970s"},{"n":"Neon Arcade","c":["FF2E88","00E5FF","9D4EDD","FFE600","0B0B1A"],"g":"Retro 1980s"},{"n":"Memphis Squiggle","c":["FF6F91","FFC75F","00C2A8","4D8DFF","1A1A1A"],"g":"Retro 1980s"},{"n":"Mauve Living Room","c":["C39EA0","5E8C8A","E8D7D1","7A5C61","3E4A5B"],"g":"Retro 1980s"},{"n":"Miami Sunset","c":["FF7E67","FFB997","2EC4B6","7B61FF","FFF1E6"],"g":"Retro 1980s"},{"n":"Grunge Flannel","c":["5B1A1A","2F4F3A","8C6D46","3A3A3A","D9CBB0"],"g":"Retro 1990s"},{"n":"Hunter Green and Burgundy","c":["1F4D3A","6D1B2C","C9A66B","E8DFCB","2B2B2B"],"g":"Retro 1990s"},{"n":"Windbreaker Jam","c":["1F9E89","6A3FA0","FF4F79","FFD23F","1C1C3C"],"g":"Retro 1990s"},{"n":"Mall Food Court","c":["0FA3B1","F7A072","EDDEA4","B5838D","3D315B"],"g":"Retro 1990s"},{"n":"Frosted Chrome","c":["C0C7D1","E8ECF2","7DA0FA","FF9BD2","2D2F3A"],"g":"Retro 2000s"},{"n":"Bubblegum Flip Phone","c":["FF77C8","BDE0FE","CDB4DB","C1FF72","3A3A55"],"g":"Retro 2000s"},{"n":"Glitter Gel Pen","c":["9D4EDD","48CAE4","FF5DA2","F1F7FF","B8C0CC"],"g":"Retro 2000s"},{"n":"Lime Razr","c":["A6E22E","00B7EB","E0E6ED","7A7F8C","1B1D24"],"g":"Retro 2000s"}];
 
 /* ---------- Color math ---------- */
 const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
@@ -730,15 +849,15 @@ function renderBar(){
   $('pal').innerHTML=cols.map((c,i)=>{
     const fg=pickText(c,[],0,textRule==='large');
     const locked=state.locks[i];
-    const tools=TOOLS.filter(([k])=>k!=='fav'||favState==='on').map(([k,t])=>{const isFav=k==='fav'&&favHas(c);const lbl=k==='lock'?(locked?'Unlock':'Lock'):k==='fav'?(isFav?'Remove from favorite colors':'Add to favorite colors'):t;const dis=k==='remove'&&n<=2?' disabled':'';return `<button type="button" data-act="${k}" data-i="${i}" title="${lbl}" aria-label="${lbl} color ${i+1}"${k==='lock'?` aria-pressed="${locked}"`:''}${k==='fav'?` aria-pressed="${isFav}"`:''}${dis}>${k==='lock'?(locked?IC.lock:IC.unlock):k==='fav'?(isFav?IC.heartOn:IC.heart):IC[k]}</button>`}).join('');
-    return `<div class="swwrap${i===0?' first':''}${i===n-1?' last':''}" data-i="${i}"><button class="sw${i===openIdx?' open':''}" id="sw${i}" data-i="${i}" style="background:#${c};color:${fg};${i===openIdx?'flex-grow:1.6':''}" aria-label="Color ${i+1}, ${colorName(c)}, #${c}${locked?', locked':''}. Click to edit, drag to move">${locked?`<span class="lk" style="opacity:1">${IC.lock}</span>`:''}<span>${c}</span></button><div class="swtools"><div class="swt" role="toolbar" aria-label="Tools for color ${i+1}">${tools}</div></div></div>`}).join('');
+    const tools=TOOLS.filter(([k])=>k!=='fav'||favState==='on').map(([k,t])=>{const isFav=k==='fav'&&favHas(c);const lbl=k==='reroll'&&locked?'Unlock to shuffle this color':k==='lock'?(locked?'Unlock':'Lock'):k==='fav'?(isFav?'Remove from favorite colors':'Add to favorite colors'):t;const dis=(k==='remove'&&n<=2)||(k==='reroll'&&locked)?' disabled':'';return `<button type="button" data-act="${k}" data-i="${i}" title="${lbl}" aria-label="${lbl} color ${i+1}"${k==='lock'?` aria-pressed="${locked}"`:''}${k==='fav'?` aria-pressed="${isFav}"`:''}${dis}>${k==='lock'?(locked?IC.lock:IC.unlock):k==='fav'?(isFav?IC.heartOn:IC.heart):IC[k]}</button>`}).join('');
+    return `<div class="swwrap${i===0?' first':''}${i===n-1?' last':''}" data-i="${i}"><button class="sw${i===openIdx?' open':''}" id="sw${i}" data-i="${i}" style="background:#${c};color:${fg};${i===openIdx?'flex-grow:1.6':''}" aria-label="Color ${i+1}, ${colorName(c)}, #${c}${locked?', locked':''}. Click to edit, drag to move">${locked?`<span class="lk" style="opacity:1">${IC.lock}</span>`:''}<span>${c}</span></button>${locked?'':`<button type="button" class="swre" data-act="reroll" data-i="${i}" title="Shuffle this color" aria-label="Shuffle color ${i+1}" style="color:${fg};background:${lum(fg.slice(1))>.5?'rgba(0,0,0,.3)':'rgba(255,255,255,.55)'}">${IC.reroll}</button>`}<div class="swtools"><div class="swt" role="toolbar" aria-label="Tools for color ${i+1}">${tools}</div></div></div>`}).join('');
   $('count').textContent=`${n} of 10`;
   $('addBtn').disabled=n>=10;
   $('remBtn').disabled=n<=2;
   $('undoBtn').disabled=!hist.length;
   $('redoBtn').disabled=!fut.length;
 }
-function render(){renderTabs();renderBar();renderGrid();save();if(typeof drawInfo==='function'&&infoIdx>=0){if(infoIdx>=state.colors.length)closeInfo();else drawInfo()}if(!$('exportPop').hidden)fillExport(lastCopy)}
+function render(){renderTabs();renderBar();renderGrid();save();if(typeof drawPInfo==='function'&&pinfoOpen)drawPInfo();if(typeof drawInfo==='function'&&infoIdx>=0){if(infoIdx>=state.colors.length)closeInfo();else drawInfo()}if(!$('exportPop').hidden)fillExport(lastCopy)}
 
 /* ---------- Swatch tools ---------- */
 const SVGI=d=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
@@ -751,10 +870,11 @@ const IC={
  info:SVGI('<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>'),
  copy:SVGI('<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/>'),
  remove:SVGI('<path d="M6 6l12 12M18 6L6 18"/>'),
+ reroll:SVGI('<path d="M3 7h3c4 0 6 10 10 10h5M3 17h3c1.6 0 2.8-1.6 3.9-3.6M14.1 9.6C15.2 8.1 16.3 7 18 7h3M18 4l3 3-3 3M18 14l3 3-3 3"/>'),
  heart:SVGI('<path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/>'),
  heartOn:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z" fill="#D6336C" stroke="#D6336C" stroke-width="2" stroke-linejoin="round"/></svg>',
 };
-const TOOLS=[['drag','Drag to move (or use arrow keys)'],['lock','Lock'],['fav','Add to favorite colors'],['contrast','Check contrast'],['shades','View shades'],['info','Color info'],['copy','Copy hex'],['remove','Remove color']];
+const TOOLS=[['drag','Drag to move'],['lock','Lock'],['fav','Add to favorite colors'],['contrast','Check contrast'],['shades','View shades'],['info','Color info'],['copy','Copy hex'],['remove','Remove color']];
 function colorName(h){
   const [H,S,L]=toHsl(rgb(h));
   if(S<.1||L<.06||L>.97){ if(L<.12)return 'Near Black'; if(L<.3)return 'Charcoal'; if(L<.55)return 'Gray'; if(L<.8)return 'Silver'; if(L<.95)return 'Light Gray'; return 'Off White'}
@@ -792,6 +912,7 @@ function place(pop,anchor){
   pop.style.left=x+'px';pop.style.top=y+'px';
 }
 function closeAll(except){
+  if(except!=='modePop'&&window.hideMoodTip)window.hideMoodTip();
   pops.forEach(p=>{if(p!==except){$(p).hidden=true}});
   ['adjBtn','browseBtn','exportBtn','modeBtn','saveBtn'].forEach(b=>$(b).setAttribute('aria-expanded',String(except===({adjBtn:'adjPop',browseBtn:'browsePop',exportBtn:'exportPop',modeBtn:'modePop',saveBtn:'savePop'})[b])));
   if(!['editPop','contrastPop','shadesPop'].includes(except)&&openIdx!==-1){openIdx=-1;renderBar()}
@@ -810,6 +931,7 @@ function openEdit(i){
   $('editTitle').textContent=`Color ${i+1} of ${state.colors.length}`;
   $('editColor').value='#'+c;$('editHex').value='#'+c;
   $('lockBtn').textContent=state.locks[i]?'Unlock':'Lock';
+  $('eReroll').disabled=state.locks[i];
   $('delBtn').disabled=state.colors.length<=2;
   syncEditFav();
   closeAll('editPop');place($('editPop'),$('sw'+i));
@@ -823,8 +945,9 @@ function setColor(i,h,record){
 $('editColor').addEventListener('focus',()=>{editStart=snapshot()});
 $('editColor').addEventListener('input',e=>{const h=norm(e.target.value);if(h){if(editStart){hist.push(editStart);fut=[];editStart=null}state.colors[openIdx]=h;$('editHex').value='#'+h;renderBar();renderGrid();save()}});
 $('editHex').addEventListener('change',e=>{const h=norm(e.target.value);if(h)setColor(openIdx,h,true);else e.target.value='#'+state.colors[openIdx]});
-$('lockBtn').onclick=()=>{state.locks[openIdx]=!state.locks[openIdx];$('lockBtn').textContent=state.locks[openIdx]?'Unlock':'Lock';renderBar();save()};
+$('lockBtn').onclick=()=>{state.locks[openIdx]=!state.locks[openIdx];$('lockBtn').textContent=state.locks[openIdx]?'Unlock':'Lock';$('eReroll').disabled=state.locks[openIdx];renderBar();save()};
 function moveColor(i,j){if(j<0||j>=state.colors.length||i===j)return;commit(()=>{const c=state.colors.splice(i,1)[0],l=state.locks.splice(i,1)[0];state.colors.splice(j,0,c);state.locks.splice(j,0,l)})}
+$('eReroll').onclick=()=>rerollOne(openIdx);
 $('eContrast').onclick=()=>openContrast(openIdx);
 $('eShades').onclick=()=>openShades(openIdx);
 $('eInfo').onclick=()=>openInfo(openIdx);
@@ -851,6 +974,154 @@ $('shuffleBtn').onclick=()=>{
   });
 };
 
+
+/* ---------- Mood generation (rules from the Moods guide) ---------- */
+const MOODS_GEN=[
+ ['none','None','Use the harmony from the Harmony tab',''],
+ ['elegant','Elegant','Muted color with deep darks and soft lights','Classic'],
+ ['bold','Bold','Two or three strong hues with black and white','Classic'],
+ ['bright','Bright','Saturated mid-tones spread around the wheel','Classic'],
+ ['fun','Fun','Vivid, lighter hues that jump around','Classic'],
+ ['soft','Soft (Pastel)','Very light pastels plus one dark for text','Classic'],
+ ['earthy','Earthy','Muted greens, browns, and tans','Classic'],
+ ['corporate','Corporate','Blues and grays with one warm accent','Classic'],
+ ['gothic','Gothic','Near-black with oxblood, plum, and pewter','Dark and Dramatic'],
+ ['academia','Dark Academia','Espresso, forest green, burgundy, and parchment','Dark and Dramatic'],
+ ['jewel','Jewel Tones','Deep emerald, sapphire, amethyst, and ruby','Dark and Dramatic'],
+ ['cyber','Cyberpunk','Electric neon on near-black','Dark and Dramatic'],
+ ['coastal','Coastal','Sand, sea glass, and navy','Light and Lifestyle'],
+ ['cottage','Cottagecore','Sage, cream, butter, and dusty rose','Light and Lifestyle'],
+ ['boho','Boho','Terracotta, rust, mustard, and olive','Light and Lifestyle'],
+ ['scandi','Scandinavian','Warm whites, greige, and charcoal','Light and Lifestyle'],
+ ['retro','Retro','Colors from a past decade','Retro'],
+];
+const ERA_KEYS=['1920s','1930s','1940s','1950s','1960s','1970s','1980s','1990s','2000s'];
+const ERA_DESC={'1920s':'Art Deco black, gold, jade, and cream','1930s':'Jadeite green, butterscotch, cream, and brown','1940s':'Olive, khaki, victory red, and navy','1950s':'Diner pastels, turquoise, and cherry red','1960s':'Mod brights, flower power, and space-age white','1970s':'Harvest gold, avocado, burnt orange, and brown','1980s':'Neon on black, Memphis brights, and mauve','1990s':'Grunge darks, hunter green, burgundy, teal, and purple','2000s':'Frosted silver, baby blue, bubblegum pink, and lime'};
+let moodSel='none',decade='any',lastEra='',genTabSel='harmony';
+try{const v=localStorage.getItem('palette-studio-mood');if(v&&MOODS_GEN.some(x=>x[0]===v))moodSel=v;const d=localStorage.getItem('palette-studio-decade');if(d==='any'||ERA_KEYS.includes(d))decade=d}catch(e){}
+if(moodSel!=='none')genTabSel='mood';
+function setMood(m){moodSel=m;try{localStorage.setItem('palette-studio-mood',m)}catch(e){}}
+function setDecade(d){decade=d;try{localStorage.setItem('palette-studio-decade',d)}catch(e){}}
+function genTab(t){genTabSel=t;$('gtHarmony').hidden=t!=='harmony';$('gtMood').hidden=t!=='mood';document.querySelectorAll('#genTabs [data-gt]').forEach(b=>{b.setAttribute('aria-checked',String(b.dataset.gt===t));b.setAttribute('aria-selected',String(b.dataset.gt===t))})}
+const rr=(a,b)=>a+Math.random()*(b-a);
+const pk=a=>a[Math.floor(Math.random()*a.length)];
+const shuf=a=>{a=a.slice();for(let k=a.length-1;k>0;k--){const j=Math.floor(Math.random()*(k+1));[a[k],a[j]]=[a[j],a[k]]}return a};
+const HX=(h,s,l)=>hex(fromHsl([h,clamp(s,0,1),clamp(l,0,1)]));
+const eraPool=d=>SAVED.filter(p=>p.g==='Retro '+d);
+const seq=(n,list,extra)=>Array.from({length:n},(_,k)=>(k<list.length?list[k]:extra[(k-list.length)%extra.length])());
+function moodColors(n,h0){
+  const hue=h0==null?Math.random()*360:h0, out=[];
+  switch(moodSel){
+  case 'elegant':{
+    const acc=n>=3?1:0,rest=n-acc,dN=Math.ceil(rest/2);
+    for(let k=0;k<dN;k++)out.push(HX(hue+rr(-8,8),rr(.08,.22),rr(.08,.28)));
+    for(let k=0;k<rest-dN;k++)out.push(HX(hue+rr(-10,10),rr(.1,.3),rr(.84,.96)));
+    if(acc)out.push(HX(pk([hue+rr(-25,25),32,285,222]),rr(.3,.45),rr(.42,.56)));
+    break}
+  case 'bold':{
+    const offs=pk([[0,180],[0,120,240]]);
+    const strong=Math.max(1,Math.min(offs.length,n-2));
+    for(let k=0;k<strong;k++)out.push(HX(hue+offs[k]+rr(-6,6),rr(.82,1),rr(.42,.54)));
+    if(n>=2)out.push(HX(hue,rr(.1,.2),rr(.05,.09)));
+    if(n>=3)out.push(HX(hue,rr(.1,.3),rr(.96,.98)));
+    let k=0;while(out.length<n){out.push(HX(hue+offs[k%offs.length]+rr(-6,6),rr(.8,1),k%2?rr(.62,.7):rr(.26,.34)));k++}
+    break}
+  case 'bright':{
+    const step=360/n;for(let k=0;k<n;k++)out.push(HX(hue+k*step+rr(-8,8),rr(.78,1),rr(.5,.62)));break}
+  case 'fun':{
+    const base=shuf([330,175,270,30,48,200,95,350]),sh=rr(-10,10);
+    for(let k=0;k<n;k++)out.push(HX((k===0&&h0!=null?h0:base[k%base.length]+sh)+rr(-8,8),rr(.75,.95),rr(.58,.74)));break}
+  case 'soft':{
+    const pastel=n>=5?n-1:n,step=288/Math.max(1,pastel);
+    for(let k=0;k<pastel;k++)out.push(HX(hue+k*step+rr(-10,10),rr(.3,.6),rr(.84,.92)));
+    if(pastel<n)out.push(HX(hue,rr(.15,.25),rr(.18,.26)));break}
+  case 'earthy':{
+    const pool=[()=>HX(rr(20,32),rr(.3,.45),rr(.22,.34)),()=>HX(rr(35,45),rr(.35,.5),rr(.5,.62)),()=>HX(rr(70,85),rr(.2,.35),rr(.34,.46)),()=>HX(rr(95,120),rr(.12,.25),rr(.26,.4)),()=>HX(rr(34,42),rr(.25,.4),rr(.78,.88)),()=>HX(rr(24,34),rr(.25,.4),rr(.44,.56)),()=>HX(rr(60,95),rr(.1,.2),rr(.6,.72))];
+    out.push(pool[0]());if(n>=2)out.push(pool[4]());
+    const mid=shuf([1,2,3,5,6]);let k=0;while(out.length<n){out.push(pool[mid[k%mid.length]]());k++}
+    break}
+  case 'corporate':{
+    const b=rr(200,222);
+    const list=[()=>HX(b,rr(.5,.65),rr(.14,.22)),()=>HX(pk([36,14,42]),rr(.82,.95),rr(.5,.58)),()=>HX(b+rr(-4,4),rr(.45,.6),rr(.4,.5)),()=>HX(b,rr(.15,.25),rr(.88,.93)),()=>HX(b,rr(.06,.12),rr(.3,.4))];
+    const extra=[()=>HX(b+rr(-6,6),rr(.4,.55),rr(.6,.7)),()=>HX(b,rr(.05,.1),rr(.62,.72)),()=>HX(b,rr(.5,.6),rr(.28,.34))];
+    for(let k=0;k<n;k++)out.push(k<5?list[k]():extra[(k-5)%extra.length]());
+    break}
+
+  case 'gothic':{
+    out.push(...seq(n,[()=>HX(rr(270,340),rr(.08,.2),rr(.04,.09)),()=>HX(pk([345,352,290,300]),rr(.5,.7),rr(.24,.34)),()=>HX(rr(240,290),rr(.04,.1),rr(.42,.55)),()=>HX(rr(260,320),rr(.05,.12),rr(.78,.86)),()=>HX(rr(260,300),rr(.15,.3),rr(.14,.24))],
+      [()=>HX(rr(280,320),rr(.2,.35),rr(.3,.38)),()=>HX(rr(0,20),rr(.05,.1),rr(.16,.22)),()=>HX(rr(340,355),rr(.4,.55),rr(.14,.2))]));break}
+  case 'academia':{
+    out.push(...seq(n,[()=>HX(rr(20,30),rr(.3,.4),rr(.1,.16)),()=>HX(rr(38,45),rr(.4,.6),rr(.84,.9)),()=>HX(rr(140,160),rr(.25,.4),rr(.15,.24)),()=>HX(rr(345,355),rr(.45,.6),rr(.2,.28)),()=>HX(rr(36,42),rr(.45,.55),rr(.38,.48))],
+      [()=>HX(rr(30,40),rr(.15,.25),rr(.32,.42)),()=>HX(rr(230,250),rr(.1,.2),rr(.1,.15)),()=>HX(rr(36,44),rr(.25,.35),rr(.66,.74))]));break}
+  case 'jewel':{
+    const gems=shuf([()=>HX(rr(152,164),rr(.7,.85),rr(.25,.35)),()=>HX(rr(218,228),rr(.65,.8),rr(.3,.4)),()=>HX(rr(270,282),rr(.5,.65),rr(.32,.42)),()=>HX(rr(344,352),rr(.75,.9),rr(.3,.38)),()=>HX(rr(182,190),rr(.65,.8),rr(.26,.34))]);
+    out.push(...seq(n,[()=>HX(rr(220,280),rr(.3,.5),rr(.07,.12)),()=>HX(rr(42,48),rr(.65,.75),rr(.5,.58)),...gems],[()=>HX(rr(42,48),rr(.5,.6),rr(.72,.8))]));break}
+  case 'cyber':{
+    const neon=shuf([()=>HX(rr(320,340),1,rr(.55,.6)),()=>HX(rr(180,190),1,rr(.45,.52)),()=>HX(rr(55,60),1,rr(.55,.62)),()=>HX(rr(150,160),1,rr(.48,.52)),()=>HX(rr(280,290),1,rr(.55,.62))]);
+    out.push(...seq(n,[()=>HX(rr(235,260),rr(.3,.5),rr(.03,.07)),neon[0],neon[1],()=>HX(rr(235,260),rr(.35,.5),rr(.14,.2)),neon[2],neon[3],neon[4]],[()=>HX(rr(230,250),rr(.08,.15),rr(.6,.7))]));break}
+  case 'coastal':{
+    out.push(...seq(n,[()=>HX(rr(210,220),rr(.45,.55),rr(.16,.24)),()=>HX(rr(36,45),rr(.3,.45),rr(.88,.94)),()=>HX(rr(165,180),rr(.25,.4),rr(.7,.78)),()=>HX(rr(190,205),rr(.25,.4),rr(.42,.52)),()=>HX(rr(35,42),rr(.25,.35),rr(.68,.76))],
+      [()=>HX(rr(195,205),rr(.35,.5),rr(.8,.86)),()=>HX(rr(200,210),rr(.1,.15),rr(.55,.62)),()=>HX(rr(185,195),rr(.3,.4),rr(.3,.36))]));break}
+  case 'cottage':{
+    out.push(...seq(n,[()=>HX(rr(90,110),rr(.12,.2),rr(.38,.48)),()=>HX(rr(40,48),rr(.5,.7),rr(.93,.96)),()=>HX(rr(85,105),rr(.15,.25),rr(.62,.72)),()=>HX(rr(-10,10),rr(.35,.5),rr(.78,.84)),()=>HX(rr(44,50),rr(.7,.85),rr(.76,.82))],
+      [()=>HX(rr(260,275),rr(.25,.35),rr(.82,.88)),()=>HX(rr(25,35),rr(.25,.35),rr(.55,.62)),()=>HX(rr(-5,5),rr(.2,.3),rr(.62,.7))]));break}
+  case 'boho':{
+    out.push(...seq(n,[()=>HX(rr(10,18),rr(.5,.6),rr(.42,.5)),()=>HX(rr(35,42),rr(.45,.6),rr(.9,.94)),()=>HX(rr(36,42),rr(.6,.72),rr(.55,.62)),()=>HX(rr(70,80),rr(.25,.35),rr(.36,.44)),()=>HX(rr(18,26),rr(.55,.65),rr(.36,.44))],
+      [()=>HX(rr(20,28),rr(.25,.35),rr(.16,.22)),()=>HX(rr(32,40),rr(.4,.5),rr(.72,.8)),()=>HX(rr(8,14),rr(.35,.45),rr(.66,.72))]));break}
+  case 'scandi':{
+    out.push(...seq(n,[()=>HX(rr(200,220),rr(.04,.08),rr(.2,.26)),()=>HX(rr(35,45),rr(.15,.3),rr(.96,.98)),()=>HX(rr(35,45),rr(.1,.18),rr(.84,.9)),()=>HX(rr(32,40),rr(.2,.3),rr(.66,.74)),()=>HX(rr(180,220),rr(.03,.06),rr(.55,.62))],
+      [()=>HX(rr(170,200),rr(.05,.1),rr(.74,.8)),()=>HX(rr(30,40),rr(.05,.1),rr(.42,.5)),()=>HX(rr(35,45),rr(.08,.14),rr(.92,.95))]));break}
+  case 'retro':{
+    const d=decade==='any'?pk(ERA_KEYS):decade;lastEra=d;
+    const pool=[...new Set(eraPool(d).flatMap(p=>p.c))].sort((a,b)=>lum(a)-lum(b));
+    if(!pool.length)return moodSel='none',[];
+    const used=new Set();
+    for(let k=0;k<n;k++){
+      const i=n===1?Math.floor(Math.random()*pool.length):Math.round(k*(pool.length-1)/(n-1));
+      let j=clamp(i+Math.floor(rr(-2,3)),0,pool.length-1),g=0;
+      while(used.has(j)&&g<pool.length){j=(j+1)%pool.length;g++}
+      used.add(j);
+      const [hh,ss,ll]=toHsl(rgb(pool[j]));
+      out.push(HX(hh+rr(-6,6),ss*rr(.88,1.08),ll+rr(-.05,.05)));
+    }
+    break}
+  }
+  return shuf(out).slice(0,n);
+}
+function moodGenerate(){
+  if(moodSel==='none')return false;
+  const m=state.locks.filter(l=>!l).length;
+  if(!m){toast('Unlock a color to generate');return true}
+  commit(()=>{
+    const anchor=state.colors.find((c,i)=>state.locks[i]);
+    const h0=anchor&&['elegant','bold','bright','fun','soft'].includes(moodSel)?toHsl(rgb(anchor))[0]:null;
+    const out=moodColors(m,h0);let q=0;
+    state.colors=state.colors.map((c,i)=>state.locks[i]?c:(out[q++]||c));
+  });
+  if(moodSel==='retro'&&decade==='any'&&lastEra)toast('Retro '+lastEra+' palette');
+  return true;
+}
+
+/* Shuffle one color: a new color that follows the current mood or harmony */
+function rerollOne(i){
+  if(i<0||i>=state.colors.length)return;
+  if(state.locks[i]){toast('Unlock this color to shuffle it');return}
+  const cur=state.colors[i];let c;
+  if(moodSel!=='none'){
+    const anchor=state.colors.find((x,j)=>j!==i&&state.locks[j]);
+    const h0=anchor&&['elegant','bold','bright','fun','soft'].includes(moodSel)?toHsl(rgb(anchor))[0]:null;
+    const pool=moodColors(Math.max(6,state.colors.length),h0).filter(x=>x!==cur&&!state.colors.includes(x));
+    c=pool.length?pk(pool):HX(toHsl(rgb(cur))[0]+rr(-20,20),toHsl(rgb(cur))[1],rr(.2,.9));
+  }else{
+    const m=mode==='auto'?pk(Object.keys(HUES)):mode;
+    const ref=state.colors.find((x,j)=>j!==i&&state.locks[j])||state.colors.find((x,j)=>j!==i)||cur;
+    c=HX(toHsl(rgb(ref))[0]+pk(HUES[m])+rr(-8,8),rr(.45,.85),rr(.16,.94));
+  }
+  setColor(i,c,true);
+  if(openIdx===i&&!$('editPop').hidden)$('editHex').value='#'+c;
+  toast('New color #'+c);
+}
+
 /* Generate: color harmonies, locked colors kept */
 const MODES=[
  ['auto','Auto','A random harmony each time'],
@@ -866,6 +1137,7 @@ const HUES={mono:[0],analog:[-40,-20,0,20,40],comp:[0,180],split:[0,150,210],tri
 let mode='auto';
 try{const m=localStorage.getItem('palette-studio-mode');if(m&&HUES[m]||m==='auto')mode=m}catch(e){}
 function generate(){
+  if(moodGenerate())return;
   commit(()=>{
     const n=state.colors.length;
     const m=mode==='auto'?Object.keys(HUES)[Math.floor(Math.random()*7)]:mode;
@@ -889,16 +1161,31 @@ function generate(){
   });
 }
 function renderModes(){
-  $('modeMenu').innerHTML=MODES.map(([k,l,d])=>`<button role="menuitemradio" id="mode-${k}" data-m="${k}" aria-checked="${k===mode}"><span>${l}<small>${d}</small></span>${k===mode?'<span aria-hidden="true">&#10003;</span>':''}</button>`).join('');
-  $('modeLbl').textContent=MODES.find(x=>x[0]===mode)[1];
+  const hm=moodSel==='none';
+  $('modeMenu').innerHTML=MODES.map(([k,l,d])=>{const on=hm&&k===mode;return `<button role="menuitemradio" id="mode-${k}" data-m="${k}" aria-checked="${on}"><span>${l}<small>${d}</small></span>${on?'<span aria-hidden="true">&#10003;</span>':''}</button>`}).join('');
+  const dr=$('decadeRow');
+  $('moodMenu').innerHTML=MOODS_GEN.map(([k,l,d,g],i)=>(g&&g!==MOODS_GEN[i-1][3]?`<div class="mgrp">${g}</div>`:'')+`<button role="menuitemradio" id="gmood-${k}" data-gm="${k}" aria-checked="${k===moodSel}"><span>${l}<small>${d}</small></span>${k==='retro'?`<span class="chev${k===moodSel?' open':''}" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></span>`:k===moodSel?'<span aria-hidden="true">&#10003;</span>':''}</button>`).join('');
+  $('gmood-retro').setAttribute('aria-expanded',String(moodSel==='retro'));
+  $('gmood-retro').after(dr);
+  $('decadeList').innerHTML=[['any','Any Decade','A different decade each time'],...ERA_KEYS.map(k=>[k,k==='2000s'?'2000s (Y2K)':k,ERA_DESC[k]])].map(([k,l,d])=>`<button type="button" role="radio" data-dec="${k}" aria-checked="${k===decade}"><span>${l}<small>${d}</small></span>${k===decade?'<span aria-hidden="true">&#10003;</span>':''}</button>`).join('');
+  $('harmNote').textContent=hm?'Locked colors stay put. The first locked color sets the starting hue.':'A mood is on, so the mood sets the colors. Pick a harmony here to turn the mood off.';
+  $('decadeRow').hidden=moodSel!=='retro';
+  $('modeLbl').textContent=hm?MODES.find(x=>x[0]===mode)[1]:moodSel==='retro'?(decade==='any'?'Retro':'Retro '+decade):MOODS_GEN.find(x=>x[0]===moodSel)[1]+' Mood';
+  genTab(genTabSel);
 }
 renderModes();
 $('modeBtn').onclick=()=>toggle('modePop',$('modeBtn'));
-$('modeMenu').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;mode=b.dataset.m;try{localStorage.setItem('palette-studio-mode',mode)}catch(err){}renderModes();closeAll(null);generate();toast(MODES.find(x=>x[0]===mode)[1]+' palette')});
+$('modeMenu').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;mode=b.dataset.m;setMood('none');renderModes();closeAll(null);generate();toast(MODES.find(x=>x[0]===mode)[1]+' palette')});
+$('genTabs').addEventListener('click',e=>{const b=e.target.closest('[data-gt]');if(!b)return;genTab(b.dataset.gt);place($('modePop'),$('modeBtn'))});
+$('moodMenu').addEventListener('click',e=>{const b=e.target.closest('[data-gm]');if(!b)return;setMood(b.dataset.gm);renderModes();
+  if(moodSel==='none'){toast('Mood off. '+MODES.find(x=>x[0]===mode)[1]+' harmony is back on.');return}
+  if(moodSel==='retro'){place($('modePop'),$('modeBtn'));generate();return}
+  closeAll(null);generate();toast(MOODS_GEN.find(x=>x[0]===moodSel)[1]+' palette')});
+$('decadeRow').addEventListener('click',e=>{const b=e.target.closest('[data-dec]');if(!b)return;setDecade(b.dataset.dec);renderModes();generate();const f=document.querySelector(`[data-dec="${decade}"]`);if(f)f.focus()});
 $('genBtn').onclick=generate;
 document.addEventListener('keydown',e=>{
   if(e.target.closest('input,textarea,select'))return;
-  if(e.code==='Space'){if(infoIdx>=0||e.target.closest('button'))return;e.preventDefault();generate()}
+  if(e.code==='Space'){if(infoIdx>=0||pinfoOpen||e.target.closest('button'))return;e.preventDefault();generate()}
   if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'){e.preventDefault();e.shiftKey?redo():undo()}
   if(e.key==='Escape'){const anyPop=pops.some(p=>!$(p).hidden);if(anyPop)closeAll(null);else if(infoIdx>=0)closeInfo();else closeZoom()}
 });
@@ -922,12 +1209,12 @@ $('adjApply').onclick=()=>{const next=shown();adj={hue:0,sat:0,bri:0,tmp:0};comm
 $('adjReset').onclick=()=>cancelAdj();
 
 /* Browse */
-$('browseList').innerHTML=SAVED.map((p,i)=>`<button data-b="${i}"><i>${p.c.map(c=>`<b style="background:#${c}"></b>`).join('')}</i><span>${esc(p.n)} (${p.c.length})</span></button>`).join('');
-function loadColors(list,label){
+$('browseList').innerHTML=SAVED.map((p,i)=>(p.g&&(i===0||SAVED[i-1].g!==p.g)?`<div class="bgh">${esc(p.g)}</div>`:'')+`<button data-b="${i}"><i>${p.c.map(c=>`<b style="background:#${c}"></b>`).join('')}</i><span>${esc(p.n)} (${p.c.length})</span></button>`).join('');
+function loadColors(list,label,keepOpen){
   list=list.slice(0,10);if(list.length<2){toast('Need at least 2 colors');return}
-  commit(()=>{state.colors=list;state.locks=list.map(()=>false)});closeAll(null);toast(label?`Loaded ${label}`:'Colors loaded');
+  commit(()=>{state.colors=list;state.locks=list.map(()=>false)});if(!keepOpen)closeAll(null);toast(label?`Loaded ${label}`:'Colors loaded');
 }
-$('browseList').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const p=SAVED[+b.dataset.b];loadColors(p.c.slice(),p.n)});
+$('browseList').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const p=SAVED[+b.dataset.b];loadColors(p.c.slice(),p.n,true)});
 $('pasteGo').onclick=()=>{const m=($('pasteBox').value.match(/[0-9a-f]{6}\b/gi)||[]).map(norm);if(m.length>10)toast('Only the first 10 colors were loaded');loadColors(m)};
 function browseView(v){$('bpLoad').hidden=v!=='load';$('bpFav').hidden=v!=='fav';const p=$('browsePop');if(!p.hidden){place(p,$('browseBtn'));p.scrollTop=0}const f=v==='fav'?$('favBack'):$('favOpen');if(f&&!f.hidden)f.focus()}
 $('browseBtn').onclick=()=>{browseView('load');toggle('browsePop',$('browseBtn'))};
@@ -954,6 +1241,7 @@ $('pal').addEventListener('click',e=>{
   if(t){const i=+t.dataset.i,act=t.dataset.act;
     if(act==='fav'){toggleFavColor(shown()[i])}
     else if(act==='lock'){state.locks[i]=!state.locks[i];renderBar();save();toast(state.locks[i]?'Color locked':'Color unlocked')}
+    else if(act==='reroll')rerollOne(i);
     else if(act==='contrast')openContrast(i);
     else if(act==='shades')openShades(i);
     else if(act==='info')openInfo(i);
@@ -1004,9 +1292,9 @@ addEventListener('pointerup',endDrag);addEventListener('pointercancel',endDrag);
 function openContrast(i){
   openIdx=i;const c=shown()[i];
   $('cTitle').textContent=`Contrast for #${c}`;
-  const rows=[['White text','FFFFFF'],['Black text','000000']];
+  const rows=[['White Text','FFFFFF'],['Black Text','000000']];
   const best=pickText(c,C.length?C:shown(),4.5,false).slice(1);
-  if(!rows.some(r=>r[1]===best))rows.push(['Best palette color',best]);
+  if(!rows.some(r=>r[1]===best))rows.push(['Best Palette Color',best]);
   $('cBody').innerHTML=rows.map(([l,t])=>{const k=con(c,t),[r,cl]=rating(k);return `<div class="crow"><span class="aa" style="background:#${c};color:#${t}">Aa</span><div><b>${l}</b><small>#${t} &middot; ${k.toFixed(2)}:1</small></div><span class="rate ${cl}">${r}</span></div>`}).join('');
   renderBar();closeAll('contrastPop');place($('contrastPop'),$('sw'+i));
 }
@@ -1035,14 +1323,14 @@ function drawInfo(){
   const harms=[['Analogous',[rot(c,-30),c,rot(c,30)]],['Complementary',[c,rot(c,180)]],['Split Complementary',[c,rot(c,150),rot(c,210)]],['Triadic',[c,rot(c,120),rot(c,240)]],['Tetradic',[c,rot(c,60),rot(c,180),rot(c,240)]],['Square',[c,rot(c,90),rot(c,180),rot(c,270)]]];
   const sims=[rot(c,-12),rot(c,12),hex(fromHsl([H,clamp(S*.7,0,1),L])),hex(fromHsl([H,clamp(S*1.25+.05,0,1),L]))];
   const shades=shadesOf(c).filter((_,k)=>k%2===0);
-  const acc=[['On white','FFFFFF'],['On black','000000']].map(([l,t])=>{const k=con(c,t),[rr,cl]=rating(k);return `<div class="crow"><span class="aa" style="background:#${t};color:#${c}">Aa</span><div><b>${l}</b><small>${k.toFixed(2)}:1</small></div><span class="rate ${cl}">${rr}</span></div>`}).join('');
+  const acc=[['On White','FFFFFF'],['On Black','000000']].map(([l,t])=>{const k=con(c,t),[rr,cl]=rating(k);return `<div class="crow"><span class="aa" style="background:#${t};color:#${c}">Aa</span><div><b>${l}</b><small>${k.toFixed(2)}:1</small></div><span class="rate ${cl}">${rr}</span></div>`}).join('');
   $('iBody').innerHTML=`
    <section><h4>Conversions</h4><div class="conv">${conv.map(([k,v])=>`<button data-copy="${v}"><small>${k}</small><span>${v}</span></button>`).join('')}</div><p class="inote">Click a value to copy it.</p></section>
-   <section><h4>Shades and tints</h4><div class="strip">${shades.map(h=>`<button data-use="${h}" style="background:#${h}" title="Use #${h}" aria-label="Use #${h}"></button>`).join('')}</div></section>
+   <section><h4>Shades and Tints</h4><div class="strip">${shades.map(h=>`<button data-use="${h}" style="background:#${h}" title="Use #${h}" aria-label="Use #${h}"></button>`).join('')}</div></section>
    <section><h4>Harmonies</h4><div class="harm">${harms.map(([n,l])=>`<div><p>${n}</p>${chips(l)}</div>`).join('')}</div></section>
-   <section><h4>Similar colors</h4><div class="sim">${sims.map(h=>`<button data-use="${h}"><i style="background:#${h}"></i><span>${colorName(h)}<small>#${h}</small></span></button>`).join('')}</div></section>
+   <section><h4>Similar Colors</h4><div class="sim">${sims.map(h=>`<button data-use="${h}"><i style="background:#${h}"></i><span>${colorName(h)}<small>#${h}</small></span></button>`).join('')}</div></section>
    <section><h4>Accessibility</h4>${acc}</section>
-   <section><h4>Color vision preview</h4><div class="cb">${Object.entries(CVD).map(([n,m])=>`<div><i style="background:#${simulate(c,m)}"></i>${n}</div>`).join('')}</div><p class="inote">How this color may look to people with each type of color blindness.</p></section>
+   <section><h4>Color Vision Preview</h4><div class="cb">${Object.entries(CVD).map(([n,m])=>`<div><i style="background:#${simulate(c,m)}"></i>${n}</div>`).join('')}</div><p class="inote">How this color may look to people with each type of color blindness.</p></section>
    <p class="inote">Click any color above to use it in place of this one. Undo brings the original back. Color names are approximate.</p>`;
 }
 $('iBody').addEventListener('click',e=>{
@@ -1097,7 +1385,7 @@ function renderFavUI(){
   else{
     const pal=fav.palettes.length?`<div class="browse-list">${fav.palettes.map(p=>`<div class="fpal"><button class="load" data-fp="${esc(p.id)}"><i>${p.colors.map(c=>`<b style="background:#${c}"></b>`).join('')}</i><span>${esc(p.name)} (${p.colors.length})</span></button><button class="del" data-fpdel="${esc(p.id)}" title="Delete ${esc(p.name)}" aria-label="Delete saved palette ${esc(p.name)}">×</button></div>`).join('')}</div>`:'<p class="fempty">No saved palettes yet. Use Save in the palette bar.</p>';
     const cols=fav.colors.length?`<div class="favcolors">${fav.colors.map(c=>`<span class="fchip" style="background:#${c.hex}"><button style="position:absolute;inset:0;border:0;background:none;cursor:pointer;border-radius:8px" data-fc="${c.hex}" title="Add #${c.hex} to the palette" aria-label="Add #${c.hex} to the palette"></button><button class="del" data-fcdel="${c.hex}" title="Remove #${c.hex}" aria-label="Remove #${c.hex} from favorites">×</button></span>`).join('')}</div>`:'<p class="fempty">No favorite colors yet. Use the heart on any color.</p>';
-    sec.innerHTML=`<div class="bkbar"><button class="tb" data-bk="export">Back up favorites</button><button class="tb" data-bk="import">Restore from backup</button></div><p class="fempty">${favPersist?'Your favorites are saved in this browser only. Back them up to keep them safe or use them on another device.':'<strong>This browser won’t keep your favorites after you close the page.</strong> Back them up before you leave.'}</p><div id="bkPanel" class="bkpanel" hidden></div><label>My saved palettes</label>${pal}<label>My favorite colors</label>${cols}<p class="fempty">Click a favorite color to add it to the palette.</p>`;
+    sec.innerHTML=`<div class="bkbar"><button class="tb" data-bk="export">Back Up Favorites</button><button class="tb" data-bk="import">Restore from Backup</button></div><p class="fempty">${favPersist?'Your favorites are saved in this browser only. Back them up to keep them safe or use them on another device.':'<strong>This browser won’t keep your favorites after you close the page.</strong> Back them up before you leave.'}</p><div id="bkPanel" class="bkpanel" hidden></div><label>My Saved Palettes</label>${pal}<label>My Favorite Colors</label>${cols}<p class="fempty">Click a favorite color to add it to the palette.</p>`;
   }
   syncEditFav();
   renderBar();
@@ -1105,7 +1393,7 @@ function renderFavUI(){
 $('favSection').addEventListener('click',e=>{
   const d1=e.target.closest('[data-fpdel]');if(d1){const p=fav.palettes.find(x=>x.id===d1.dataset.fpdel);if(p){favSave({...fav,palettes:fav.palettes.filter(x=>x.id!==p.id)});toast('Deleted '+p.name)}return}
   const d2=e.target.closest('[data-fcdel]');if(d2){toggleFavColor(d2.dataset.fcdel);return}
-  const l=e.target.closest('[data-fp]');if(l){const p=fav.palettes.find(x=>x.id===l.dataset.fp);if(p)loadColors(p.colors.slice(),p.name);return}
+  const l=e.target.closest('[data-fp]');if(l){const p=fav.palettes.find(x=>x.id===l.dataset.fp);if(p)loadColors(p.colors.slice(),p.name,true);return}
   const c=e.target.closest('[data-fc]');if(c){const h=c.dataset.fc;if(state.colors.includes(h)){toast('#'+h+' is already in the palette');return}if(state.colors.length>=10){toast('The palette has 10 colors. Remove one first.');return}commit(()=>{state.colors.push(h);state.locks.push(false)});toast('Added #'+h)}
 });
 function openSave(){
@@ -1138,9 +1426,9 @@ const BKNAME='palette-studio-favorites.json';
 const bkText=()=>JSON.stringify({app:'Palette Studio',kind:'favorites',version:1,exported:new Date().toISOString(),colors:fav.colors,palettes:fav.palettes},null,1);
 function bkShow(html){renderFavUI();const p=$('bkPanel');p.innerHTML=html;p.hidden=false;const f=p.querySelector('button,textarea');if(f)f.focus()}
 const STORE_STEPS=`<ol><li>Open Google Drive (drive.google.com), OneDrive, Dropbox, or your email.</li><li>Drag the file in, or choose New, then File upload (in email, attach it to a message to yourself).</li></ol>`;
-const RESTORE_TIP=`<p>To bring your favorites back on any computer or browser: download the file from where you stored it, open Palette Studio, choose Browse, then <strong>Restore from backup</strong>.</p>`;
+const RESTORE_TIP=`<p>To bring your favorites back on any computer or browser: download the file from where you stored it, open Palette Studio, choose Browse, then <strong>Restore from Backup</strong>.</p>`;
 function showCode(){
-  bkShow(`<h4>Copy your backup code</h4><p>The file didn’t save, so here is your backup as text. Copy it and paste it into a Google Doc, a note, or an email to yourself.</p><textarea id="bkCode" readonly>${esc(bkText())}</textarea><div class="row"><button class="tb" data-bk="copy">Copy code</button><button class="tb" data-bk="close">Done</button></div><p>To restore later, choose <strong>Restore from backup</strong> and paste the code.</p>`);
+  bkShow(`<h4>Copy Your Backup Code</h4><p>The file didn’t save, so here is your backup as text. Copy it and paste it into a Google Doc, a note, or an email to yourself.</p><textarea id="bkCode" readonly>${esc(bkText())}</textarea><div class="row"><button class="tb" data-bk="copy">Copy Code</button><button class="tb" data-bk="close">Done</button></div><p>To restore later, choose <strong>Restore from Backup</strong> and paste the code.</p>`);
 }
 async function doExport(){
   if(!fav.colors.length&&!fav.palettes.length){toast('Nothing to back up yet');return}
@@ -1149,7 +1437,7 @@ async function doExport(){
     const link=document.createElement('a');link.href=url;link.download=BKNAME;
     document.body.appendChild(link);link.click();link.remove();
     setTimeout(()=>URL.revokeObjectURL(url),4000);
-    bkShow(`<h4>Backup saved</h4><p>The file <strong>${BKNAME}</strong> is in your Downloads folder. To keep it safe:</p>${STORE_STEPS}${RESTORE_TIP}<div class="row"><button class="tb" data-bk="close">Done</button></div>`);
+    bkShow(`<h4>Backup Saved</h4><p>The file <strong>${BKNAME}</strong> is in your Downloads folder. To keep it safe:</p>${STORE_STEPS}${RESTORE_TIP}<div class="row"><button class="tb" data-bk="close">Done</button></div>`);
   }catch(err){
     const c=err&&err.code;
     if(c==='declined'){toast('Backup canceled');return}
@@ -1158,7 +1446,7 @@ async function doExport(){
   }
 }
 function showImport(){
-  bkShow(`<h4>Restore from backup</h4><p>Pick your backup file (${BKNAME}). If you saved it in Google Drive or elsewhere, download it to this computer first.</p><div class="row"><button class="tb" data-bk="pick">Choose file</button></div><p>Or paste a backup code:</p><textarea id="bkPaste" placeholder="Paste your backup code here"></textarea><div class="row"><button class="tb" data-bk="paste">Restore pasted code</button><button class="tb" data-bk="close">Cancel</button></div><p>Restoring adds the backup to what you already have. Nothing is deleted.</p>`);
+  bkShow(`<h4>Restore from Backup</h4><p>Pick your backup file (${BKNAME}). If you saved it in Google Drive or elsewhere, download it to this computer first.</p><div class="row"><button class="tb" data-bk="pick">Choose File</button></div><p>Or paste a backup code:</p><textarea id="bkPaste" placeholder="Paste your backup code here"></textarea><div class="row"><button class="tb" data-bk="paste">Restore Pasted Code</button><button class="tb" data-bk="close">Cancel</button></div><p>Restoring adds the backup to what you already have. Nothing is deleted.</p>`);
 }
 function mergeIn(text){
   let d;try{d=JSON.parse(text)}catch(e){toast('That isn’t a Palette Studio backup');return}
@@ -1182,6 +1470,144 @@ $('favSection').addEventListener('click',async e=>{
   else if(a==='close'){$('bkPanel').hidden=true}
 });
 $('bkFile').addEventListener('change',e=>{const f=e.target.files&&e.target.files[0];e.target.value='';if(!f)return;if(f.size>2e6){toast('That file is too large');return}const r=new FileReader();r.onload=()=>mergeIn(String(r.result||''));r.onerror=()=>toast('Could not read that file');r.readAsText(f)});
+
+/* Mood guide: opens on hover or focus, click pins it (touch) */
+(()=>{
+  const wrap=$('moodWrap'),btn=$('moodBtn'),tip=$('moodTip');
+  let pinned=false,hideT=null;
+  function placeTip(){
+    const pop=$('modePop').getBoundingClientRect(),r=btn.getBoundingClientRect();
+    tip.style.maxHeight=Math.min(620,innerHeight-40)+'px';
+    tip.style.width='';
+    const ar=innerWidth-pop.right-28,al=pop.left-28,side=Math.max(ar,al);
+    if(side>=360)tip.style.width=Math.min(680,side)+'px';
+    const w=tip.offsetWidth,hh=tip.offsetHeight;
+    let x,y=Math.min(Math.max(10,pop.top),innerHeight-hh-10),bx=0,bw=0;
+    if(side>=360&&ar>=al){x=pop.right+12;bx=r.right;bw=x-r.right}
+    else if(side>=360){x=pop.left-12-w;bx=x+w;bw=r.left-bx}
+    else{x=Math.max(16,(innerWidth-w)/2);y=10}
+    tip.style.left=x+'px';tip.style.top=y+'px';
+    tip.style.setProperty('--bx',bx+'px');tip.style.setProperty('--bw',Math.max(0,bw)+'px');
+    tip.style.setProperty('--by',(r.top-60)+'px');tip.style.setProperty('--bh',(bw>0?r.height+120:0)+'px');
+  }
+  function show(){clearTimeout(hideT);if(!wrap.classList.contains('show')){wrap.classList.add('show');btn.setAttribute('aria-expanded','true')}placeTip()}
+  function hide(force){const ae=document.activeElement;if(!force&&(pinned||(ae&&ae.tagName==='SELECT'&&tip.contains(ae))))return;pinned=false;wrap.classList.remove('show');btn.setAttribute('aria-expanded','false')}
+  window.hideMoodTip=()=>hide(true);
+  wrap.addEventListener('mouseenter',show);
+  wrap.addEventListener('mouseleave',()=>{hideT=setTimeout(()=>hide(false),400)});
+  btn.addEventListener('focus',show);
+  wrap.addEventListener('focusout',e=>{if(!wrap.contains(e.relatedTarget))hide(false)});
+  btn.addEventListener('click',()=>{if(pinned){hide(true)}else{pinned=true;show()}});
+  tip.addEventListener('click',e=>{const b=e.target.closest('[data-mood]');if(!b)return;loadColors(b.dataset.mood.split(','),b.dataset.mname);hide(true)});
+  document.addEventListener('pointerdown',e=>{if(!wrap.contains(e.target))hide(true)});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&wrap.classList.contains('show')){hide(true);btn.focus()}});
+  addEventListener('resize',()=>{if(wrap.classList.contains('show'))placeTip()});
+})();
+
+/* Moods guide: decade dropdown and mood buttons */
+(()=>{
+  const sel=$('eraSel'),tip=$('moodTip');
+  function drawEra(){
+    const d=sel.value;$('eraDesc').textContent=ERA_DESC[d]||'';
+    $('eraGen').textContent='Generate a '+d+' Palette';
+    $('eraStrips').innerHTML=eraPool(d).map(p=>`<div><b>${esc(p.n)}</b><button type="button" class="mstrip" data-mood="${p.c.join(',')}" data-mname="${esc(p.n)}" title="Load ${esc(p.n)}" aria-label="Load example palette ${esc(p.n)}">${p.c.map(c=>`<b style="background:#${c}"></b>`).join('')}</button></div>`).join('');
+  }
+  if(decade!=='any')sel.value=decade;
+  sel.addEventListener('change',drawEra);drawEra();
+  tip.addEventListener('click',e=>{
+    const u=e.target.closest('[data-setmood]');
+    const g=e.target.closest('#eraGen');
+    if(!u&&!g)return;
+    if(g){setMood('retro');setDecade(sel.value)}else setMood(u.dataset.setmood);
+    genTabSel='mood';renderModes();if(window.hideMoodTip)window.hideMoodTip();closeAll(null);generate();
+    toast((moodSel==='retro'?'Retro '+(decade==='any'?lastEra:decade):MOODS_GEN.find(x=>x[0]===moodSel)[1])+' palette. The mood stays on for Generate.');
+  });
+})();
+$('tipClose').addEventListener('click',()=>{if(window.hideMoodTip)window.hideMoodTip();$('moodBtn').focus()});
+
+/* ---------- Palette info: cohesion, accessibility, alternatives ---------- */
+var pinfoOpen=false, pinfoReturn=null, PALTS=[];
+const dE=(a,b)=>{const x=toLab(a),y=toLab(b);return Math.hypot(x[0]-y[0],x[1]-y[1],x[2]-y[2])};
+const strip5=cs=>`<span class="row5">${cs.map(c=>`<i style="background:#${c}"></i>`).join('')}</span>`;
+function paletteChecks(cs){
+  const H=cs.map(c=>toHsl(rgb(c)));
+  const Ls=H.map(x=>x[2]), lo=Math.min(...Ls), hi=Math.max(...Ls);
+  const chrom=H.filter(([h,s,l])=>s>.12&&l>.1&&l<.92);
+  const out=[];
+  // lightness range
+  const sp=hi-lo;
+  out.push(sp>=.5?['good','Light and dark range',`Lightness runs from ${Math.round(lo*100)}% to ${Math.round(hi*100)}%, so there are readable text pairs.`]
+    :['ok','Light and dark range',`Lightness only runs from ${Math.round(lo*100)}% to ${Math.round(hi*100)}%. Add a much darker or lighter color for text.`]);
+  // hue structure
+  let scheme='Neutral (little or no color)';
+  if(chrom.length===1)scheme='One hue with neutrals';
+  else if(chrom.length>1){
+    const hs=chrom.map(x=>x[0]).sort((a,b)=>a-b);let gap=0;
+    hs.forEach((v,k)=>{const nx=k===hs.length-1?hs[0]+360:hs[k+1];gap=Math.max(gap,nx-v)});
+    const spread=360-gap;
+    const diff=(a,b)=>{const d=Math.abs(a-b)%360;return d>180?360-d:d};
+    const hasComp=hs.some(a=>hs.some(b=>diff(a,b)>=150));
+    if(spread<=20)scheme='Monochromatic';
+    else if(spread<=90)scheme='Analogous';
+    else if(hasComp&&spread<=200)scheme='Complementary';
+    else if(spread>250)scheme='Hues all around the wheel (triadic or wider)';
+    else scheme='Mixed hues';
+  }
+  out.push(['good','Closest color scheme',scheme+'.']);
+  // intensity
+  if(chrom.length>1){
+    const ss=chrom.map(x=>x[1]),mean=ss.reduce((a,b)=>a+b,0)/ss.length,sd=Math.sqrt(ss.reduce((a,b)=>a+(b-mean)**2,0)/ss.length);
+    out.push(sd<=.22?['good','Color intensity',`Saturation is consistent (average ${Math.round(mean*100)}%), so the colors feel like one family.`]
+      :['ok','Color intensity','Some colors are much more vivid than others. That works for one accent; with several, the palette can feel uneven.']);
+  }
+  // temperature
+  const warm=chrom.filter(x=>x[0]<70||x[0]>=330).length, cool=chrom.filter(x=>x[0]>=150&&x[0]<270).length;
+  if(chrom.length)out.push(['good','Temperature',warm&&!cool?'Warm overall.':cool&&!warm?'Cool overall.':warm>cool?'Mostly warm, with some cool colors.':cool>warm?'Mostly cool, with some warm colors.':'An even mix of warm and cool colors.']);
+  // near duplicates
+  let pair=null,md=1e9;
+  for(let a=0;a<cs.length;a++)for(let b=a+1;b<cs.length;b++){const d=dE(cs[a],cs[b]);if(d<md){md=d;pair=[cs[a],cs[b]]}}
+  if(pair)out.push(md<10?['ok','Distinct colors',`#${pair[0]} and #${pair[1]} are nearly the same. Consider changing one.`]:['good','Distinct colors','Every color is easy to tell apart from the others.']);
+  return out;
+}
+function drawPInfo(){
+  const cs=shown();
+  $('piStrip').innerHTML=cs.map(c=>`<i style="background:#${c}"></i>`).join('');
+  $('piSub').textContent=`${cs.length} colors${moodSel!=='none'?' · '+(moodSel==='retro'?'Retro '+(decade==='any'?'':decade):MOODS_GEN.find(x=>x[0]===moodSel)[1])+' mood':''}`;
+  // cohesion
+  const checks=paletteChecks(cs), warns=checks.filter(c=>c[0]==='ok').length;
+  const verdict=warns===0?['Strong','good']:warns===1?['Fair','ok']:['Needs work','bad'];
+  // accessibility
+  const pairs=cs.map(bg=>{const cands=[...cs.filter(c=>c!==bg),'FFFFFF','17171C'];let best=cands[0],bk=0;cands.forEach(c=>{const k=con(bg,c);if(k>bk){bk=k;best=c}});return [bg,best,bk]});
+  let good=0,total=0;for(let a=0;a<cs.length;a++)for(let b=a+1;b<cs.length;b++){total++;if(con(cs[a],cs[b])>=4.5)good++}
+  const cvd=Object.entries(CVD).map(([n,m])=>{const sim=cs.map(c=>simulate(c,m));let md=1e9,pr=null;for(let a=0;a<sim.length;a++)for(let b=a+1;b<sim.length;b++){const d=dE(sim[a],sim[b]);if(d<md){md=d;pr=[cs[a],cs[b]]}}return [n,sim,md<12?`#${pr[0]} and #${pr[1]} may look alike.`:'All colors stay distinct.']});
+  // alternatives
+  const lockKeep=v=>v.map((c,k)=>state.locks[k]?cs[k]:c);
+  const V=[['Softer','Less saturated',{hue:0,sat:-35,bri:0,tmp:0}],['Bolder','More saturated',{hue:0,sat:30,bri:0,tmp:0}],['Lighter','Brighter overall',{hue:0,sat:0,bri:30,tmp:0}],['Darker','Deeper overall',{hue:0,sat:0,bri:-30,tmp:0}],['Warmer','Shifted toward red and yellow',{hue:0,sat:0,bri:0,tmp:40}],['Cooler','Shifted toward blue',{hue:0,sat:0,bri:0,tmp:-40}]];
+  PALTS=V.map(([n,d,a])=>({n,d,c:lockKeep(cs.map(c=>adjust(c,a)))}));
+  const sim=SAVED.map(p=>{const f=(A,B)=>A.reduce((s,a)=>s+Math.min(...B.map(b=>dE(a,b))),0)/A.length;return {p,score:(f(cs,p.c)+f(p.c,cs))/2}}).sort((a,b)=>a.score-b.score).slice(0,3);
+  sim.forEach(({p})=>PALTS.push({n:p.n,d:p.g||'Library palette',c:p.c.slice(),lib:true}));
+  $('piBody').innerHTML=`
+   <section><h4>Overall Cohesion</h4><div class="verdict"><span class="rate ${verdict[1]}">${verdict[0]}</span><span>${warns===0?'The palette follows the usual cohesion rules.':warns===1?'One area could be stronger.':'A few areas could be stronger.'}</span></div>
+     <ul class="checks">${checks.map(([k,t,d])=>`<li><span class="ck ${k}" aria-hidden="true">${k==='good'?'&#10003;':'!'}</span><span><b>${t}.</b> ${esc(d)}</span></li>`).join('')}</ul>
+     <p class="inote">These are common design rules of thumb, not fixed requirements.</p></section>
+   <section><h4>Accessibility</h4><p class="inote" style="margin:0 0 8px">${good} of ${total} color pairs reach 4.5:1, the contrast for regular text. Best text color on each background:</p>
+     <div class="pairs">${pairs.map(([bg,t,k])=>{const [r,cl]=rating(k);return `<div><span class="aa" style="background:#${bg};color:#${t}">Aa</span><span><b>#${bg}</b><small>#${t} · ${k.toFixed(1)}:1</small></span><span class="rate ${cl}">${r}</span></div>`}).join('')}</div></section>
+   <section><h4>Color Vision Check</h4><div class="cvd">${cvd.map(([n,sim,msg])=>`<div><span>${n}</span>${strip5(sim)}<p>${msg}</p></div>`).join('')}</div></section>
+   <section><h4>Similar Alternatives</h4><div class="alts">${PALTS.map((a,k)=>a.lib?'':`<button data-alt="${k}">${strip5(a.c)}<span>${esc(a.n)}<small> · ${esc(a.d)}</small></span></button>`).join('')}</div>
+     <p class="inote">These keep your locked colors as they are.</p>
+     <h4 style="margin-top:14px">Closest Palettes in the Library</h4><div class="alts">${PALTS.map((a,k)=>a.lib?`<button data-alt="${k}">${strip5(a.c)}<span>${esc(a.n)}<small> · ${esc(a.d)}</small></span></button>`:'').join('')}</div>
+     <p class="inote">Click any palette to use it. Undo brings your palette back.</p></section>`;
+}
+function openPInfo(){pinfoOpen=true;pinfoReturn=document.activeElement;closeAll(null);drawPInfo();$('pinfo').hidden=false;document.body.classList.add('zoomed');$('piClose').focus()}
+function closePInfo(){if(!pinfoOpen)return;pinfoOpen=false;$('pinfo').hidden=true;if(zoomIdx<0&&infoIdx<0)document.body.classList.remove('zoomed');if(pinfoReturn&&pinfoReturn.isConnected)pinfoReturn.focus()}
+$('pinfoBtn').onclick=openPInfo;
+$('piClose').onclick=closePInfo;
+$('pinfo').addEventListener('click',e=>{
+  if(e.target===$('pinfo')){closePInfo();return}
+  const b=e.target.closest('[data-alt]');if(!b)return;const a=PALTS[+b.dataset.alt];if(!a)return;
+  if(a.lib){loadColors(a.c,a.n)}else{commit(()=>{state.colors=a.c.slice(0,10)});toast(a.n+' version applied')}
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&pinfoOpen){e.stopPropagation();closePInfo()}},true);
 render();
 </script>
 
