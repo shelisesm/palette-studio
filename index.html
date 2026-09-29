@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="Preview any palette of 2 to 10 colors on sample designs.">
+<meta name="description" content="Preview any palette of 2 to 12 colors on sample designs.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8E%A8%3C/text%3E%3C/svg%3E">
 <title>Palette Studio</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800;900&display=swap">
@@ -43,11 +43,11 @@ h1{margin:0;font-size:34px;font-weight:900;letter-spacing:-.02em;line-height:1.0
 .bar{position:fixed;left:0;right:0;bottom:0;background:var(--panel);border-top:1px solid var(--line);box-shadow:var(--shadow);padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));z-index:20}
 .bar-in{max-width:1320px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px}
 .pal{display:flex;align-items:stretch;gap:0;min-width:0;flex:1 1 360px}
-.swwrap{position:relative;flex:1 1 0;min-width:30px;display:flex;touch-action:none}
+.swwrap{position:relative;flex:1 1 0;min-width:24px;display:flex;touch-action:none}
 .swwrap.dragging{z-index:6}
 .swwrap.dragging .sw{box-shadow:0 6px 18px rgba(0,0,0,.3);transform:scale(1.04)}
 .swwrap.shift{transition:transform .15s}
-.sw{position:relative;flex:1;height:46px;border:0;cursor:grab;padding:0;display:flex;align-items:flex-end;justify-content:center;transition:flex-grow .15s}
+.sw{position:relative;flex:1;min-width:0;overflow:hidden;height:46px;border:0;cursor:grab;padding:0;display:flex;align-items:flex-end;justify-content:center;transition:flex-grow .15s}
 .swwrap:first-child .sw{border-radius:8px 0 0 8px}
 .swwrap:last-child .sw{border-radius:0 8px 8px 0}
 .sw span{font-size:10px;font-weight:700;letter-spacing:.03em;padding-bottom:4px;opacity:0;transition:opacity .15s;font-variant-numeric:tabular-nums;pointer-events:none}
@@ -295,7 +295,7 @@ body.dragging-sw .swre{display:none!important}
   <header class="head">
     <div>
       <h1>Palette Studio</h1>
-      <p class="lede">Preview any palette of 2 to 10 colors on sample designs. Shuffle, adjust, and edit the colors in the bar at the bottom. The brands and text on the samples are made up.</p>
+      <p class="lede">Preview any palette of 2 to 12 colors on sample designs. Shuffle, adjust, and edit the colors in the bar at the bottom. The brands and text on the samples are made up.</p>
     </div>
     <div class="tabs" role="group" aria-label="Design categories" id="tabs"></div>
   </header>
@@ -452,7 +452,7 @@ let adj={hue:0,sat:0,bri:0,tmp:0};
 let hist=[],fut=[];
 let tab='all';
 try{const s=JSON.parse(localStorage.getItem('palette-studio')||'null');
-  if(s&&Array.isArray(s.colors)&&s.colors.length>=2&&s.colors.length<=10&&s.colors.every(c=>norm(c))){state.colors=s.colors.map(norm);state.locks=state.colors.map((_,i)=>!!(s.locks&&s.locks[i]))}
+  if(s&&Array.isArray(s.colors)&&s.colors.length>=2&&s.colors.length<=12&&s.colors.every(c=>norm(c))){state.colors=s.colors.map(norm);state.locks=state.colors.map((_,i)=>!!(s.locks&&s.locks[i]))}
   if(s&&s.tab)tab=s.tab;}catch(e){}
 const save=()=>{try{localStorage.setItem('palette-studio',JSON.stringify({...state,tab}))}catch(e){}};
 const snapshot=()=>JSON.stringify(state);
@@ -851,8 +851,8 @@ function renderBar(){
     const locked=state.locks[i];
     const tools=TOOLS.filter(([k])=>k!=='fav'||favState==='on').map(([k,t])=>{const isFav=k==='fav'&&favHas(c);const lbl=k==='reroll'&&locked?'Unlock to shuffle this color':k==='lock'?(locked?'Unlock':'Lock'):k==='fav'?(isFav?'Remove from favorite colors':'Add to favorite colors'):t;const dis=(k==='remove'&&n<=2)||(k==='reroll'&&locked)?' disabled':'';return `<button type="button" data-act="${k}" data-i="${i}" title="${lbl}" aria-label="${lbl} color ${i+1}"${k==='lock'?` aria-pressed="${locked}"`:''}${k==='fav'?` aria-pressed="${isFav}"`:''}${dis}>${k==='lock'?(locked?IC.lock:IC.unlock):k==='fav'?(isFav?IC.heartOn:IC.heart):IC[k]}</button>`}).join('');
     return `<div class="swwrap${i===0?' first':''}${i===n-1?' last':''}" data-i="${i}"><button class="sw${i===openIdx?' open':''}" id="sw${i}" data-i="${i}" style="background:#${c};color:${fg};${i===openIdx?'flex-grow:1.6':''}" aria-label="Color ${i+1}, ${colorName(c)}, #${c}${locked?', locked':''}. Click to edit, drag to move">${locked?`<span class="lk" style="opacity:1">${IC.lock}</span>`:''}<span>${c}</span></button>${locked?'':`<button type="button" class="swre" data-act="reroll" data-i="${i}" title="Shuffle this color" aria-label="Shuffle color ${i+1}" style="color:${fg};background:${lum(fg.slice(1))>.5?'rgba(0,0,0,.3)':'rgba(255,255,255,.55)'}">${IC.reroll}</button>`}<div class="swtools"><div class="swt" role="toolbar" aria-label="Tools for color ${i+1}">${tools}</div></div></div>`}).join('');
-  $('count').textContent=`${n} of 10`;
-  $('addBtn').disabled=n>=10;
+  $('count').textContent=`${n} of 12`;
+  $('addBtn').disabled=n>=12;
   $('remBtn').disabled=n<=2;
   $('undoBtn').disabled=!hist.length;
   $('redoBtn').disabled=!fut.length;
@@ -961,7 +961,7 @@ function newColor(){ // a color that fits: shift hue of a random existing color
   const [h,s,l]=toHsl(rgb(base));
   return hex(fromHsl([h+60+Math.random()*120,clamp(s*(.7+Math.random()*.5),.15,1),clamp(.25+Math.random()*.55,0,1)]));
 }
-$('addBtn').onclick=()=>{if(state.colors.length>=10)return;commit(()=>{state.colors.push(newColor());state.locks.push(false)})};
+$('addBtn').onclick=()=>{if(state.colors.length>=12)return;commit(()=>{state.colors.push(newColor());state.locks.push(false)})};
 $('remBtn').onclick=()=>{if(state.colors.length<=2)return;commit(()=>{state.colors.pop();state.locks.pop()})};
 
 /* Shuffle: reorder colors (locked ones keep their spot) */
@@ -1211,11 +1211,11 @@ $('adjReset').onclick=()=>cancelAdj();
 /* Browse */
 $('browseList').innerHTML=SAVED.map((p,i)=>(p.g&&(i===0||SAVED[i-1].g!==p.g)?`<div class="bgh">${esc(p.g)}</div>`:'')+`<button data-b="${i}"><i>${p.c.map(c=>`<b style="background:#${c}"></b>`).join('')}</i><span>${esc(p.n)} (${p.c.length})</span></button>`).join('');
 function loadColors(list,label,keepOpen){
-  list=list.slice(0,10);if(list.length<2){toast('Need at least 2 colors');return}
+  list=list.slice(0,12);if(list.length<2){toast('Need at least 2 colors');return}
   commit(()=>{state.colors=list;state.locks=list.map(()=>false)});if(!keepOpen)closeAll(null);toast(label?`Loaded ${label}`:'Colors loaded');
 }
 $('browseList').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const p=SAVED[+b.dataset.b];loadColors(p.c.slice(),p.n,true)});
-$('pasteGo').onclick=()=>{const m=($('pasteBox').value.match(/[0-9a-f]{6}\b/gi)||[]).map(norm);if(m.length>10)toast('Only the first 10 colors were loaded');loadColors(m)};
+$('pasteGo').onclick=()=>{const m=($('pasteBox').value.match(/[0-9a-f]{6}\b/gi)||[]).map(norm);loadColors(m);if(m.length>12)toast('Loaded the first 12 colors. The palette holds 12 at most.')};
 function browseView(v){$('bpLoad').hidden=v!=='load';$('bpFav').hidden=v!=='fav';const p=$('browsePop');if(!p.hidden){place(p,$('browseBtn'));p.scrollTop=0}const f=v==='fav'?$('favBack'):$('favOpen');if(f&&!f.hidden)f.focus()}
 $('browseBtn').onclick=()=>{browseView('load');toggle('browsePop',$('browseBtn'))};
 $('favOpen').onclick=()=>browseView('fav');
@@ -1366,7 +1366,7 @@ function favSave(next){
 function cleanFav(d){
   const colors=[],palettes=[];const seen=new Set();
   (Array.isArray(d&&d.colors)?d.colors:[]).forEach(c=>{const h=norm(typeof c==='string'?c:c&&c.hex);if(h&&!seen.has(h)){seen.add(h);colors.push({hex:h,added:(c&&c.added)||new Date().toISOString()})}});
-  (Array.isArray(d&&d.palettes)?d.palettes:[]).forEach(p=>{if(!p||!Array.isArray(p.colors))return;const cs=p.colors.map(norm).filter(Boolean).slice(0,10);if(cs.length<2)return;palettes.push({id:String(p.id||('p'+Math.random().toString(36).slice(2,10))).slice(0,40),name:String(p.name||'Untitled palette').slice(0,60),colors:cs,saved:p.saved||new Date().toISOString()})});
+  (Array.isArray(d&&d.palettes)?d.palettes:[]).forEach(p=>{if(!p||!Array.isArray(p.colors))return;const cs=p.colors.map(norm).filter(Boolean).slice(0,12);if(cs.length<2)return;palettes.push({id:String(p.id||('p'+Math.random().toString(36).slice(2,10))).slice(0,40),name:String(p.name||'Untitled palette').slice(0,60),colors:cs,saved:p.saved||new Date().toISOString()})});
   return {colors:colors.slice(0,500),palettes:palettes.slice(0,200)};
 }
 function toggleFavColor(h){
@@ -1394,7 +1394,7 @@ $('favSection').addEventListener('click',e=>{
   const d1=e.target.closest('[data-fpdel]');if(d1){const p=fav.palettes.find(x=>x.id===d1.dataset.fpdel);if(p){favSave({...fav,palettes:fav.palettes.filter(x=>x.id!==p.id)});toast('Deleted '+p.name)}return}
   const d2=e.target.closest('[data-fcdel]');if(d2){toggleFavColor(d2.dataset.fcdel);return}
   const l=e.target.closest('[data-fp]');if(l){const p=fav.palettes.find(x=>x.id===l.dataset.fp);if(p)loadColors(p.colors.slice(),p.name,true);return}
-  const c=e.target.closest('[data-fc]');if(c){const h=c.dataset.fc;if(state.colors.includes(h)){toast('#'+h+' is already in the palette');return}if(state.colors.length>=10){toast('The palette has 10 colors. Remove one first.');return}commit(()=>{state.colors.push(h);state.locks.push(false)});toast('Added #'+h)}
+  const c=e.target.closest('[data-fc]');if(c){const h=c.dataset.fc;if(state.colors.includes(h)){toast('#'+h+' is already in the palette');return}if(state.colors.length>=12){toast('The palette has 12 colors. Remove one first.');return}commit(()=>{state.colors.push(h);state.locks.push(false)});toast('Added #'+h)}
 });
 function openSave(){
   const cols=state.colors;
@@ -1605,7 +1605,7 @@ $('piClose').onclick=closePInfo;
 $('pinfo').addEventListener('click',e=>{
   if(e.target===$('pinfo')){closePInfo();return}
   const b=e.target.closest('[data-alt]');if(!b)return;const a=PALTS[+b.dataset.alt];if(!a)return;
-  if(a.lib){loadColors(a.c,a.n)}else{commit(()=>{state.colors=a.c.slice(0,10)});toast(a.n+' version applied')}
+  if(a.lib){loadColors(a.c,a.n)}else{commit(()=>{state.colors=a.c.slice(0,12)});toast(a.n+' version applied')}
 });
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&pinfoOpen){e.stopPropagation();closePInfo()}},true);
 render();
