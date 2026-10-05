@@ -286,6 +286,137 @@ body.dragging-sw .swre{display:none!important}
 .alts small{color:var(--muted);font-weight:500}
 .imph{margin:16px 0 0!important;padding-top:12px;border-top:1px solid var(--line)}
 .tb.primary[aria-expanded="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);box-shadow:0 0 0 2px var(--panel),0 0 0 4px var(--accent)}
+
+/* ---------- Explore panel (Browse) ---------- */
+:root{--xw:clamp(380px,42vw,620px);--barh:72px;--xchip:#eef0f4;--xchip-on:#18181f;--xchip-on-ink:#ffffff}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--xchip:#2a2a34;--xchip-on:#ededf3;--xchip-on-ink:#141419}}
+:root[data-theme="dark"]{--xchip:#2a2a34;--xchip-on:#ededf3;--xchip-on-ink:#141419}
+.xpanel{position:fixed;top:0;right:0;bottom:var(--barh);width:var(--xw);z-index:19;background:var(--panel);border-left:1px solid var(--line);box-shadow:var(--shadow);display:flex;flex-direction:column;overflow:hidden}
+.xpanel[hidden]{display:none}
+@media (max-width:760px){.xpanel{width:auto;left:0;border-left:0}}
+@media (min-width:1100px){body.xopen .wrap{max-width:none;margin-right:var(--xw)}}
+.xhead{display:flex;align-items:center;gap:10px;padding:12px 14px 8px;border-bottom:1px solid var(--line)}
+.xhead h2{margin:0;font-size:17px;font-weight:800;letter-spacing:-.01em;margin-right:auto}
+.xviews{display:flex;gap:4px}
+.xviews button{border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:5px 12px;font-weight:700;font-size:12.5px;cursor:pointer}
+.xviews button[aria-selected="true"]{background:var(--ink);color:var(--ground);border-color:var(--ink)}
+.xclose{width:32px;height:32px;border-radius:50%;border:1px solid var(--line);background:var(--ground);font-size:20px;line-height:1;cursor:pointer;flex:none}
+.xclose:hover{background:var(--hover)}
+.xscroll{flex:1;overflow:auto;overscroll-behavior:contain;padding:12px 14px 18px}
+#bpFav{padding:12px 14px 18px}
+#favBack{display:none}
+.xsearch{display:flex;gap:8px;align-items:stretch;position:sticky;top:-12px;z-index:3;background:var(--panel);padding:10px 0 8px;margin-top:-10px}
+.xbox{flex:1;display:flex;flex-wrap:wrap;align-items:center;gap:6px;min-height:42px;border:1px solid var(--line);border-radius:10px;background:var(--ground);padding:5px 8px;cursor:text}
+.xbox:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 22%,transparent)}
+.xbox input{flex:1 1 140px;min-width:120px;border:0;background:none;outline:none;font-size:13.5px;padding:4px 2px}
+.xtag{display:inline-flex;align-items:center;gap:6px;background:var(--panel);border:1px solid var(--line);border-radius:7px;padding:3px 4px 3px 9px;font-size:12.5px;font-weight:700;white-space:nowrap}
+.xtag i{width:10px;height:10px;border-radius:50%;border:1px solid rgba(0,0,0,.15)}
+.xtag small{color:var(--muted);font-weight:600}
+.xtag button{width:20px;height:20px;border:0;border-radius:5px;background:none;cursor:pointer;font-size:15px;line-height:1;color:var(--muted)}
+.xtag button:hover{background:var(--hover);color:var(--ink)}
+.xfbtn{flex:none;width:44px;border:1px solid var(--line);border-radius:10px;background:var(--panel);cursor:pointer;display:grid;place-items:center;position:relative}
+.xfbtn:hover,.xfbtn[aria-expanded="true"]{background:var(--hover);border-color:var(--muted)}
+.xfbtn svg{width:18px;height:18px}
+.xfbtn b{position:absolute;top:-6px;right:-6px;min-width:18px;height:18px;border-radius:9px;background:var(--accent);color:var(--accent-ink);font-size:10.5px;display:grid;place-items:center;padding:0 4px}
+.xsugg{border:1px solid var(--line);border-radius:10px;background:var(--panel);box-shadow:var(--shadow);margin:0 0 8px;overflow:hidden}
+.xsugg button{display:flex;align-items:center;gap:8px;width:100%;border:0;background:none;padding:8px 12px;cursor:pointer;text-align:left;font-size:13px}
+.xsugg button small{margin-left:auto;color:var(--muted);font-size:11.5px;font-weight:600}
+.xsugg button i{width:12px;height:12px;border-radius:50%;border:1px solid rgba(0,0,0,.15);flex:none}
+.xsugg button[aria-selected="true"],.xsugg button:hover{background:var(--hover)}
+.xfilters{border:1px solid var(--line);border-radius:12px;padding:6px 12px 12px;margin:0 0 10px;background:var(--panel)}
+.xfilters h4{margin:12px 0 6px;font-size:11.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.xchips{display:flex;flex-wrap:wrap;gap:6px}
+.xchips button{display:inline-flex;align-items:center;gap:6px;border:0;background:var(--xchip);border-radius:7px;padding:5px 10px;font-size:12.5px;font-weight:600;cursor:pointer}
+.xchips button:hover{filter:brightness(.96)}
+.xchips button[aria-pressed="true"]{background:var(--xchip-on);color:var(--xchip-on-ink)}
+.xchips button i{width:11px;height:11px;border-radius:50%;border:1px solid rgba(0,0,0,.18)}
+.xfnote{font-size:11.5px;color:var(--muted);margin:10px 0 0}
+.xmeta{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:2px 0 10px;font-size:12.5px;color:var(--muted);font-weight:600}
+.xmeta .sp{flex:1}
+.xmeta select{border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:5px 8px;font-weight:700;color:var(--ink)}
+.xmeta .xclear{border:0;background:none;color:var(--accent);font-weight:700;cursor:pointer;padding:0}
+.xgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,210px),1fr));gap:16px 14px}
+.xcard{min-width:0}
+.xcard.inbar .xstrip{box-shadow:0 0 0 2px var(--panel),0 0 0 4px var(--accent)}
+.xstrip{display:flex;height:76px;border-radius:10px;overflow:hidden;border:1px solid rgba(0,0,0,.06)}
+.xsw{flex:1 1 0;min-width:0;border:0;padding:0;cursor:copy;display:flex;align-items:center;justify-content:center;transition:flex-grow .18s}
+.xsw span{opacity:0;font-size:12px;font-weight:800;letter-spacing:.02em;font-variant-numeric:tabular-nums;pointer-events:none;white-space:nowrap;transition:opacity .12s}
+@media (hover:hover){.xsw:hover{flex-grow:2.2}.xsw:hover span{opacity:1}}
+.xsw:focus-visible{flex-grow:2.2;outline-offset:-3px}.xsw:focus-visible span{opacity:1}
+.xinfo{display:flex;align-items:center;gap:2px;margin-top:6px}
+.xname{flex:1;min-width:0;border:0;background:none;padding:2px 2px;text-align:left;cursor:pointer;font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.xname:hover{text-decoration:underline;text-underline-offset:3px}
+.xname small{display:block;font-size:11px;font-weight:600;color:var(--muted);text-decoration:none}
+.xinb{font-size:10.5px;font-weight:800;color:var(--accent);margin-right:4px;white-space:nowrap}
+.xic{width:30px;height:30px;border:0;border-radius:7px;background:none;cursor:pointer;display:grid;place-items:center;color:var(--muted);flex:none}
+.xic:hover{background:var(--hover);color:var(--ink)}
+.xic svg{width:17px;height:17px}
+.xic[aria-pressed="true"]{color:#D6336C}
+.xempty{grid-column:1/-1;border:1px dashed var(--line);border-radius:12px;padding:18px;color:var(--muted);font-size:13px}
+#xMore{margin:16px auto 0;display:flex}
+/* palette menu */
+.xmenu{position:fixed;z-index:37;width:230px;background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);padding:6px;max-height:calc(100vh - 20px);overflow:auto}
+.xmenu[hidden]{display:none}
+.xmenu button{display:flex;align-items:center;gap:10px;width:100%;border:0;background:none;border-radius:8px;padding:8px 10px;cursor:pointer;font-weight:600;font-size:13px;text-align:left}
+.xmenu button:hover,.xmenu button:focus-visible{background:var(--hover)}
+.xmenu button svg{width:16px;height:16px;flex:none;color:var(--muted)}
+.xmenu button .chv{margin-left:auto;transition:transform .15s}
+.xmenu button[aria-expanded="true"] .chv{transform:rotate(90deg)}
+.xmenu hr{border:0;border-top:1px solid var(--line);margin:4px 2px}
+.xsub{padding:0 0 4px 28px}
+.xsub[hidden]{display:none}
+.xsub button{padding:6px 10px;font-size:12.5px}
+/* quick view */
+.xqbox{background:var(--panel);color:var(--ink);border-radius:16px;box-shadow:var(--shadow);width:min(460px,100%);overflow:hidden;margin:auto 0}
+.xqhead{display:flex;align-items:center;gap:6px;padding:12px 12px 12px 18px}
+.xqhead h3{margin:0;font-size:16px;font-weight:800;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.xqbody{padding:10px 8px;max-height:min(430px,52vh);overflow:auto;transition:background .15s,color .15s}
+.xqrow{display:flex;align-items:center;gap:10px;width:100%;border:0;background:none;color:inherit;border-radius:10px;padding:8px 12px;text-align:left;cursor:copy}
+.xqrow:hover,.xqrow:focus-visible{background:rgba(127,127,127,.18)}
+.xqrow small{display:block;font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;opacity:.72}
+.xqrow span{font-size:15px;font-weight:700;font-variant-numeric:tabular-nums}
+.xqrow svg{width:16px;height:16px;margin-left:auto;opacity:0}
+.xqrow:hover svg,.xqrow:focus-visible svg{opacity:.8}
+.xqstrip{display:flex;height:46px;margin:12px 14px 0;border-radius:10px;overflow:visible}
+.xqstrip button{flex:1;border:0;cursor:pointer;position:relative;display:grid;place-items:center;padding:0}
+.xqstrip button:first-child{border-radius:10px 0 0 10px}
+.xqstrip button:last-child{border-radius:0 10px 10px 0}
+.xqstrip button i{width:7px;height:7px;border-radius:50%;background:currentColor;opacity:0}
+.xqstrip button[aria-pressed="true"] i{opacity:1}
+.xqstrip button span{position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--ink);color:var(--ground);font-size:11px;font-weight:700;padding:3px 7px;border-radius:6px;white-space:nowrap;display:none;pointer-events:none}
+@media (hover:hover){.xqstrip button:hover span{display:block}}
+.xqfoot{display:flex;flex-wrap:wrap;gap:8px;padding:12px 14px 14px}
+.xqfoot .note{font-size:11.5px;color:var(--muted);flex-basis:100%;margin:0}
+/* fullscreen */
+.xfull{position:fixed;inset:0;z-index:36;display:flex}
+.xfull[hidden]{display:none}
+.xfull button.xfb{flex:1;border:0;cursor:copy;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:4px;padding:0 6px 48px;font-family:var(--font)}
+.xfull button.xfb b{font-size:clamp(14px,2.2vw,26px);font-weight:800;letter-spacing:.03em}
+.xfull button.xfb small{font-size:clamp(11px,1.2vw,14px);font-weight:600;opacity:.8}
+.xfull .xfx{position:fixed;top:14px;right:14px;width:40px;height:40px;border-radius:50%;border:0;background:rgba(0,0,0,.55);color:#fff;font-size:22px;cursor:pointer;z-index:2}
+.xfull .xft{position:fixed;top:18px;left:18px;background:rgba(0,0,0,.55);color:#fff;border-radius:8px;padding:6px 12px;font-weight:700;font-size:13px}
+@media (max-width:640px){.xfull{flex-direction:column}.xfull button.xfb{flex-direction:row;justify-content:space-between;align-items:center;padding:0 20px}}
+/* contrast grid */
+.xcbox{width:min(760px,100%)}
+.xctw{overflow:auto;padding:4px 16px 8px}
+.xct{border-collapse:separate;border-spacing:4px;margin:0 auto}
+.xct th{font-size:10.5px;font-weight:800;color:var(--muted);padding:2px}
+.xct th i{display:block;width:44px;height:16px;border-radius:4px;margin:0 auto 2px;border:1px solid rgba(0,0,0,.12)}
+.xct th.rowh{text-align:right;white-space:nowrap}
+.xct th.rowh i{display:inline-block;vertical-align:middle;margin:0 0 0 6px}
+.xct td{width:62px;height:52px;border-radius:7px;text-align:center;font-size:10.5px;font-weight:700;line-height:1.2}
+.xct td b{display:block;font-size:17px;font-weight:800}
+.xct td.no{opacity:.28}
+.xct td.self{background:repeating-linear-gradient(45deg,var(--line) 0 4px,transparent 4px 8px)!important}
+.xcleg{display:flex;flex-wrap:wrap;gap:8px 14px;padding:4px 18px 16px;font-size:12px;color:var(--muted)}
+.xcleg label{display:inline-flex;align-items:center;gap:6px;font-weight:700;color:var(--ink)}
+@media (prefers-reduced-motion: reduce){.xsw,.xsw span,.xmenu button .chv,.xqbody{transition:none}}
+#bpFav label{display:block;font-size:12px;font-weight:700;margin:12px 0 4px;color:var(--muted)}
+#bpFav h3{margin:0 0 6px;font-size:14px;font-weight:800}
+#bpFav .browse-list{max-height:none}
+.xhead h2,.xviews button{white-space:nowrap}
+.xsortw{display:inline-flex;align-items:center;gap:6px}
+@media (max-width:480px){.xhead{padding:10px 12px 8px;gap:6px}.xh2l{display:none}.xviews button{padding:5px 10px;font-size:12px}.xscroll{padding:12px 12px 18px}}
 </style>
 </head>
 <body>
@@ -320,7 +451,7 @@ body.dragging-sw .swre{display:none!important}
       <button class="tb" id="undoBtn" title="Undo" aria-label="Undo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/></svg></button>
       <button class="tb" id="redoBtn" title="Redo" aria-label="Redo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m15 14 5-5-5-5"/><path d="M20 9H10a6 6 0 0 0 0 12h3"/></svg></button>
       <span class="tsep" aria-hidden="true"></span>
-      <button class="tb browse" id="browseBtn" aria-expanded="false" title="Load one of your palettes or paste colors"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 4v16"/></svg><span class="lbl">Browse</span></button>
+      <button class="tb browse" id="browseBtn" aria-expanded="false" title="Explore palettes: search, filter, and load"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 4v16"/></svg><span class="lbl">Browse</span></button>
       <button class="tb primary" id="exportBtn" aria-expanded="false" title="Export or import a palette"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 20V4M3 8l4-4 4 4M17 4v16M13 16l4 4 4-4"/></svg><span class="lbl">Export/Import</span></button>
       <button class="tb" id="pinfoBtn" title="Palette Analysis: cohesion, accessibility, and alternatives"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg><span class="lbl">Palette Analysis</span></button>
     </div>
@@ -377,21 +508,40 @@ body.dragging-sw .swre{display:none!important}
   <input type="text" id="saveName" maxlength="60">
   <div class="favcolors" id="savePreview" aria-hidden="true"></div>
   <div class="btns"><button class="tb primary" id="saveGo">Save Palette</button></div>
-  <p class="note" id="saveNote">Saved palettes appear under Browse, in this browser. Use Back up under Browse to keep a copy.</p>
+  <p class="note" id="saveNote">Saved palettes appear under Browse, in this browser. Use Back Up Favorites under Browse, My Favorites, to keep a copy.</p>
 </div>
 
-<div class="pop" id="browsePop" hidden role="dialog" aria-label="Browse palettes">
-  <div id="bpLoad">
-    <h3>Load a Palette</h3>
-    <label>Palette Library</label>
-    <div class="browse-list" id="browseList"></div>
-    <div class="btns"><button class="tb" id="favOpen" hidden>My Favorites</button></div>
+<aside class="xpanel" id="browsePop" hidden aria-labelledby="xTitle">
+  <div class="xhead">
+    <h2 id="xTitle">Explore<span class="xh2l"> Palettes</span></h2>
+    <div class="xviews" role="tablist" aria-label="Explore views">
+      <button type="button" role="tab" id="xvLib" aria-selected="true" aria-controls="bpLoad">Library</button>
+      <button type="button" role="tab" id="favOpen" aria-selected="false" aria-controls="bpFav" hidden>My Favorites</button>
+    </div>
+    <button type="button" class="xclose" id="xClose" title="Close Explore" aria-label="Close Explore">&times;</button>
   </div>
-  <div id="bpFav" hidden>
-    <div class="favhead"><button class="tb" id="favBack" aria-label="Back to Load a palette">&larr; Back</button><h3>My Favorites</h3></div>
-  <div id="favSection"></div><input type="file" id="bkFile" accept=".json,.txt,application/json,text/plain" hidden>
+  <div class="xscroll" id="xScroll">
+  <div id="bpLoad" role="tabpanel" aria-labelledby="xvLib">
+    <div class="xsearch">
+      <div class="xbox" id="xBox"><span id="xTags" style="display:contents"></span><input type="text" id="xInput" autocomplete="off" spellcheck="false" placeholder="Search names, colors, styles, topics, or hex codes" aria-label="Search palettes. Press Enter to add a tag." aria-controls="xSugg"></div>
+      <button type="button" class="xfbtn" id="xFiltBtn" aria-expanded="false" aria-controls="xFilters" title="Filters" aria-label="Show filters"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M7 12h10M10 18h4"/></svg></button>
+    </div>
+    <div class="xsugg" id="xSugg" role="listbox" aria-label="Suggestions" hidden></div>
+    <div class="xfilters" id="xFilters" hidden></div>
+    <div class="xmeta"><span id="xCount" aria-live="polite"></span><button type="button" class="xclear" id="xClearTags" hidden>Clear Tags</button><span class="sp"></span><span class="xsortw"><label for="xSort">Sort</label><select id="xSort"><option value="lib">Library Order</option><option value="az">Name A to Z</option><option value="za">Name Z to A</option><option value="most">Most Colors</option><option value="fewest">Fewest Colors</option><option value="light">Lightest First</option><option value="dark">Darkest First</option></select></span></div>
+    <div class="xgrid" id="xGrid"></div>
+    <button type="button" class="tb" id="xMore" hidden>Show More</button>
   </div>
-</div>
+  <div id="bpFav" role="tabpanel" aria-labelledby="favOpen" hidden>
+    <div class="favhead"><button class="tb" id="favBack" aria-label="Back to the library">&larr; Back</button><h3>My Favorites</h3></div>
+    <div id="favSection"></div><input type="file" id="bkFile" accept=".json,.txt,application/json,text/plain" hidden>
+  </div>
+  </div>
+</aside>
+<div class="xmenu" id="xMenu" role="menu" aria-label="Palette options" hidden></div>
+<div class="info" id="xQv" role="dialog" aria-modal="true" aria-labelledby="xQvName" hidden><div class="xqbox"><div class="xqhead"><h3 id="xQvName"></h3><button type="button" class="xic" id="xQvMore" title="More options" aria-label="More options" aria-haspopup="menu"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></button><button type="button" class="xclose" id="xQvClose" title="Close" aria-label="Close Quick View">&times;</button></div><div class="xqbody" id="xQvBody"></div><div class="xqstrip" id="xQvStrip" role="group" aria-label="Colors in this palette"></div><div class="xqfoot"><button type="button" class="tb primary" id="xQvLoad">Load in Studio Bar</button><button type="button" class="tb" id="xQvFav" hidden>Save</button><p class="note">Click a code to copy it. Use the arrow keys to move between colors. Color names are approximate.</p></div></div></div>
+<div class="info" id="xCon" role="dialog" aria-modal="true" aria-labelledby="xConName" hidden><div class="ibox xcbox"><div class="ihead"><div><h3 id="xConName">Check Contrast</h3><p id="xConSub"></p></div><button class="tb x" type="button" id="xConClose">Close</button></div><div class="xcleg"><label><input type="checkbox" id="xConOnly"> Dim pairs below</label><select id="xConMin" aria-label="Contrast level"><option value="4.5">AA 4.5:1 (regular text)</option><option value="3">AA Large 3:1 (large text, icons)</option><option value="7">AAA 7:1</option></select><span>Rows are backgrounds; columns are text colors.</span></div><div class="xctw" id="xConBody"></div></div></div>
+<div class="xfull" id="xFull" role="dialog" aria-modal="true" aria-label="Palette full screen" hidden></div>
 
 <div class="pop" id="modePop" hidden role="dialog" aria-label="Color harmony"><h3>Generate Using</h3><div class="seg3 gtabs" role="tablist" id="genTabs"><button role="tab" data-gt="harmony">Harmony</button><button role="tab" data-gt="mood">Mood</button></div><div id="gtHarmony"><div class="menu" id="modeMenu" role="menu"></div><p class="note" id="harmNote">Locked colors stay put. The first locked color sets the starting hue.</p></div><div id="gtMood" hidden><div class="mhead"><span>Pick a Mood</span><span class="mood-wrap" id="moodWrap"><button class="info-i" id="moodBtn" title="Mood guide" type="button" aria-expanded="false" aria-controls="moodTip" aria-label="Palette moods guide"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg></button><div class="mood-tip" id="moodTip" role="dialog" aria-label="Palette moods guide">
 <div class="tiphead"><h3>Palette Moods</h3><button type="button" class="info-x" id="tipClose" aria-label="Close the mood guide">&times;</button></div>
@@ -857,7 +1007,7 @@ function renderBar(){
   $('undoBtn').disabled=!hist.length;
   $('redoBtn').disabled=!fut.length;
 }
-function render(){renderTabs();renderBar();renderGrid();save();if(typeof drawPInfo==='function'&&pinfoOpen)drawPInfo();if(typeof drawInfo==='function'&&infoIdx>=0){if(infoIdx>=state.colors.length)closeInfo();else drawInfo()}if(!$('exportPop').hidden)fillExport(lastCopy)}
+function render(){renderTabs();renderBar();renderGrid();save();if(typeof xSync==='function')xSync();if(typeof drawPInfo==='function'&&pinfoOpen)drawPInfo();if(typeof drawInfo==='function'&&infoIdx>=0){if(infoIdx>=state.colors.length)closeInfo();else drawInfo()}if(!$('exportPop').hidden)fillExport(lastCopy)}
 
 /* ---------- Swatch tools ---------- */
 const SVGI=d=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
@@ -901,7 +1051,7 @@ function shadesOf(h){const[H,S]=toHsl(rgb(h));return Array.from({length:21},(_,k
 async function copyText(t,msg){try{await navigator.clipboard.writeText(t);toast(msg||'Copied '+t)}catch(e){const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');toast(msg||'Copied '+t)}catch(e2){toast(t)}ta.remove()}}
 
 /* ---------- Popovers ---------- */
-const pops=['editPop','adjPop','browsePop','exportPop','modePop','contrastPop','shadesPop','savePop'];
+const pops=['editPop','adjPop','exportPop','modePop','contrastPop','shadesPop','savePop'];
 function place(pop,anchor){
   pop.hidden=false;
   const r=anchor.getBoundingClientRect(),w=pop.offsetWidth;
@@ -914,7 +1064,7 @@ function place(pop,anchor){
 function closeAll(except){
   if(except!=='modePop'&&window.hideMoodTip)window.hideMoodTip();
   pops.forEach(p=>{if(p!==except){$(p).hidden=true}});
-  ['adjBtn','browseBtn','exportBtn','modeBtn','saveBtn'].forEach(b=>$(b).setAttribute('aria-expanded',String(except===({adjBtn:'adjPop',browseBtn:'browsePop',exportBtn:'exportPop',modeBtn:'modePop',saveBtn:'savePop'})[b])));
+  ['adjBtn','exportBtn','modeBtn','saveBtn'].forEach(b=>$(b).setAttribute('aria-expanded',String(except===({adjBtn:'adjPop',exportBtn:'exportPop',modeBtn:'modePop',saveBtn:'savePop'})[b])));
   if(!['editPop','contrastPop','shadesPop'].includes(except)&&openIdx!==-1){openIdx=-1;renderBar()}
   if(except!=='adjPop')cancelAdj(false);
 }
@@ -1209,17 +1359,11 @@ $('adjApply').onclick=()=>{const next=shown();adj={hue:0,sat:0,bri:0,tmp:0};comm
 $('adjReset').onclick=()=>cancelAdj();
 
 /* Browse */
-$('browseList').innerHTML=SAVED.map((p,i)=>(p.g&&(i===0||SAVED[i-1].g!==p.g)?`<div class="bgh">${esc(p.g)}</div>`:'')+`<button data-b="${i}"><i>${p.c.map(c=>`<b style="background:#${c}"></b>`).join('')}</i><span>${esc(p.n)} (${p.c.length})</span></button>`).join('');
 function loadColors(list,label,keepOpen){
   list=list.slice(0,12);if(list.length<2){toast('Need at least 2 colors');return}
   commit(()=>{state.colors=list;state.locks=list.map(()=>false)});if(!keepOpen)closeAll(null);toast(label?`Loaded ${label}`:'Colors loaded');
 }
-$('browseList').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const p=SAVED[+b.dataset.b];loadColors(p.c.slice(),p.n,true)});
 $('pasteGo').onclick=()=>{const m=($('pasteBox').value.match(/[0-9a-f]{6}\b/gi)||[]).map(norm);loadColors(m);if(m.length>12)toast('Loaded the first 12 colors. The palette holds 12 at most.')};
-function browseView(v){$('bpLoad').hidden=v!=='load';$('bpFav').hidden=v!=='fav';const p=$('browsePop');if(!p.hidden){place(p,$('browseBtn'));p.scrollTop=0}const f=v==='fav'?$('favBack'):$('favOpen');if(f&&!f.hidden)f.focus()}
-$('browseBtn').onclick=()=>{browseView('load');toggle('browsePop',$('browseBtn'))};
-$('favOpen').onclick=()=>browseView('fav');
-$('favBack').onclick=()=>browseView('load');
 
 /* Export */
 let lastCopy='hex';
@@ -1389,6 +1533,7 @@ function renderFavUI(){
   }
   syncEditFav();
   renderBar();
+  if(typeof xSync==='function')xSync();
 }
 $('favSection').addEventListener('click',e=>{
   const d1=e.target.closest('[data-fpdel]');if(d1){const p=fav.palettes.find(x=>x.id===d1.dataset.fpdel);if(p){favSave({...fav,palettes:fav.palettes.filter(x=>x.id!==p.id)});toast('Deleted '+p.name)}return}
@@ -1402,7 +1547,7 @@ function openSave(){
   const d=new Date();
   $('saveName').value=same?same.name:`Palette ${d.toLocaleDateString(undefined,{month:'short',day:'numeric'})} ${d.toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'})}`;
   $('savePreview').innerHTML=cols.map(c=>`<span class="fchip" style="background:#${c};cursor:default"></span>`).join('');
-  $('saveNote').textContent=same?`This palette is already saved as "${same.name}". Saving again renames it.`:'Saved palettes appear under Browse, in this browser. Use Back up under Browse to keep a copy.';
+  $('saveNote').textContent=same?`This palette is already saved as "${same.name}". Saving again renames it.`:'Saved palettes appear under Browse, in this browser. Use Back Up Favorites under Browse, My Favorites, to keep a copy.';
   toggle('savePop',$('saveBtn'));
   if(!$('savePop').hidden){$('saveName').focus();$('saveName').select()}
 }
@@ -1426,7 +1571,7 @@ const BKNAME='palette-studio-favorites.json';
 const bkText=()=>JSON.stringify({app:'Palette Studio',kind:'favorites',version:1,exported:new Date().toISOString(),colors:fav.colors,palettes:fav.palettes},null,1);
 function bkShow(html){renderFavUI();const p=$('bkPanel');p.innerHTML=html;p.hidden=false;const f=p.querySelector('button,textarea');if(f)f.focus()}
 const STORE_STEPS=`<ol><li>Open Google Drive (drive.google.com), OneDrive, Dropbox, or your email.</li><li>Drag the file in, or choose New, then File upload (in email, attach it to a message to yourself).</li></ol>`;
-const RESTORE_TIP=`<p>To bring your favorites back on any computer or browser: download the file from where you stored it, open Palette Studio, choose Browse, then <strong>Restore from Backup</strong>.</p>`;
+const RESTORE_TIP=`<p>To bring your favorites back on any computer or browser: download the file from where you stored it, open Palette Studio, choose Browse, then My Favorites, then <strong>Restore from Backup</strong>.</p>`;
 function showCode(){
   bkShow(`<h4>Copy Your Backup Code</h4><p>The file didn’t save, so here is your backup as text. Copy it and paste it into a Google Doc, a note, or an email to yourself.</p><textarea id="bkCode" readonly>${esc(bkText())}</textarea><div class="row"><button class="tb" data-bk="copy">Copy Code</button><button class="tb" data-bk="close">Done</button></div><p>To restore later, choose <strong>Restore from Backup</strong> and paste the code.</p>`);
 }
@@ -1608,6 +1753,268 @@ $('pinfo').addEventListener('click',e=>{
   if(a.lib){loadColors(a.c,a.n)}else{commit(()=>{state.colors=a.c.slice(0,12)});toast(a.n+' version applied')}
 });
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&pinfoOpen){e.stopPropagation();closePInfo()}},true);
+/* ---------- Explore panel: search tags, filters, Quick View, palette menu ---------- */
+const XCFG={"own": "Signature Palettes", "topicNote": "Topics are suggestions based on each palette's name and colors. Colors, Styles, and Number of Colors follow fixed rules from the hex codes.", "link": "https://shelisesm.github.io/palette-studio/"};
+const PTOPICS={"Vintage Carnival Delight":["Party","Kids"],"Shimmering Citrus Dream":["Summer","Happy","Party"],"Vibrant Neon Fusion":["Party","Sunset"],"Sunset Beach Vibes":["Sunset","Summer","Water"],"Golden Sunrise Glow":["Gold","Sunset"],"Floral Fantasy Dream":["Spring","Nature"],"Summer Sunset Bliss":["Summer","Sunset"],"Jungle Adventure Fun":["Nature","Autumn"],"Electric Boho Vibes":["Happy","Summer"],"Oceanic Sunset Glow":["Sunset","Water"],"Tropical Ocean Sunset":["Sunset","Water","Summer"],"Toasted Almond Cream":["Food","Relax"],"Peach Sage Linen":["Relax","Spring"],"Harbor Clay Neutrals":["Water","Relax"],"Driftwood Navy Sun":["Water","Summer"],"Lemon Frost Midnight":["Winter","Relax"],"Garden Peach Harvest":["Nature","Spring","Food"],"Midnight Cocoa Blush":["Food","Winter"],"Cocoa Sky Blush":["Food","Spring"],"Electric Rainbow Delight":["Party","Space"],"Crimson Harbor Night":["City","Water"],"Merlot Gold Linen":["Wedding","Gold"],"Sky Lemon Indigo":["Kids","Summer"],"Navy Lime Blush":["Spring","City"],"Poppy Leaf Azure":["Spring","Happy"],"Bordeaux Butter Stone":["Food","Autumn"],"Glacier Cobalt Slate":["Winter","Water"],"Pumpkin Coral Fern":["Autumn","Halloween"],"Newsprint Ink":["City"],"Deep Teal Pistachio":["Nature","Water"],"Night Sea Sand":["Water","Relax"],"Signal Blue Amber":["City"],"Violet Candy Pop":["Party","Kids"],"Primary Neon Rally":["Party","Happy"],"Smoke Olive Stone":["City","Relax"],"Espresso Marigold Mist":["Food","Autumn"],"Slate Mono":["City"],"Navy Lavender Mint":["Spring","Relax"],"Midnight Champagne":["Wedding","Gold"],"Plum Velvet Pearl":["Wedding"],"Navy Bronze Linen":["Wedding"],"Charcoal Sage Ivory":["Wedding","Relax"],"Red Ink Poster":["City"],"Cobalt Punch":["Party","City"],"Emerald Flame":["Autumn","Nature"],"Magenta Black Gold":["Party","Gold"],"Sunny Rainbow Pop":["Pride","Kids","Happy"],"Tropical Fruit Stand":["Summer","Food"],"Summer Kite":["Summer","Kids","Happy"],"Crayon Box":["Kids"],"Sherbet Stack":["Food","Summer","Kids"],"Sprinkle Jar":["Kids","Party","Food"],"Popsicle Stand":["Summer","Food"],"Confetti Picnic":["Party","Happy"],"Morning Nursery":["Kids","Spring"],"Peony Mist":["Wedding","Spring"],"Lilac Cloud":["Spring","Relax"],"Seafoam Blush":["Relax","Spring"],"Forest Floor":["Nature","Autumn"],"Canyon Clay":["Nature","Autumn"],"Moss and Stone":["Nature"],"Harvest Field":["Autumn","Nature"],"Steady Navy":["City"],"Slate Teal":["City","Water"],"Trust Blue Gray":["City"],"Graphite Green":["City","Nature"],"Midnight Chapel":["Halloween"],"Raven and Rose":["Halloween"],"Velvet Crypt":["Halloween"],"Iron Gate":["Halloween","City"],"Old Library":["Autumn"],"Brass and Ink":["Autumn","Gold"],"Tweed Study":["Autumn"],"Candlelit Archive":["Autumn","Winter"],"Crown Jewels":["Christmas","Gold"],"Sapphire Night":["Gold","Wedding"],"Ruby Lounge":["Christmas","Gold"],"Amethyst Vault":["Gold","Party"],"Night City":["City","Space","Party"],"Neon Rain":["City","Space"],"Glitch Grid":["Space","Party"],"Chrome Alley":["City"],"Sea Glass Shore":["Water","Summer"],"Driftwood Dock":["Water"],"Harbor Morning":["Water","Relax"],"Salt Marsh":["Water","Nature"],"Garden Gate":["Spring","Nature"],"Wildflower Meadow":["Spring","Nature"],"Linen and Lavender":["Spring","Relax"],"Honey Cottage":["Food","Spring"],"Desert Sun":["Sunset","Autumn"],"Macrame Morning":["Autumn"],"Sunset Canyon":["Sunset","Autumn"],"Terracotta Market":["Autumn","Food"],"Nordic Linen":["Winter","Relax"],"Birch and Stone":["Winter","Nature"],"Quiet Cabin":["Winter","Relax"],"Fjord Fog":["Winter","Water"],"Gatsby Gold":["Gold","Party"],"Deco Jade Lounge":["Gold"],"Flapper Blush":["Wedding","Party"],"Speakeasy Silver":["City","Party"],"Jadeite Kitchen":["Food","Spring"],"Bakelite Butterscotch":["Food","Autumn"],"Streamline Cream":["City"],"Radio Days":["Autumn"],"Victory Garden":["Nature"],"Home Front":[],"Utility Khaki":[],"Swing Dance":["Party"],"Diner Booth":["Food","Summer"],"Atomic Kitchen":["Food"],"Poodle Skirt":["Spring","Kids"],"Chrome and Cherry":["Food","City"],"Mod Pop Art":["Party","Happy"],"Flower Power":["Happy","Spring","Party"],"Space Age White":["Space"],"Mid-Century Lounge":["Autumn"],"Harvest Gold Kitchen":["Autumn","Food"],"Disco Sunset":["Sunset","Party"],"Shag Carpet":["Autumn"],"Avocado Den":["Autumn","Nature"],"Neon Arcade":["Party","Space"],"Memphis Squiggle":["Party","Kids"],"Mauve Living Room":["Relax"],"Miami Sunset":["Sunset","Summer","Water"],"Grunge Flannel":["Autumn"],"Hunter Green and Burgundy":["Christmas","Autumn"],"Windbreaker Jam":["Party"],"Mall Food Court":["Food","City"],"Frosted Chrome":["Winter"],"Bubblegum Flip Phone":["Kids","Party"],"Glitter Gel Pen":["Kids","Party"],"Lime Razr":["City"]};
+const XFAMS=['Red','Orange','Brown','Yellow','Green','Turquoise','Blue','Violet','Pink','Gray','Black','White'];
+const XDOT={Red:'E03131',Orange:'F08C00',Brown:'8B5A2B',Yellow:'FAD02C',Green:'40A02B',Turquoise:'15B8A6',Blue:'2F6FDE',Violet:'7C3AED',Pink:'F06595',Gray:'9A9AA5',Black:'111111',White:'FFFFFF'};
+const XSTYLES=['Warm','Cold','Bright','Dark','Pastel','Vintage','Monochromatic','Gradient','Rainbow'];
+const XTOPICS=['Christmas','Halloween','Pride','Sunset','Spring','Winter','Summer','Autumn','Gold','Wedding','Party','Space','Kids','Nature','City','Food','Happy','Water','Relax'];
+const XSYN={grey:'Gray',cool:'Cold',monochrome:'Monochromatic',mono:'Monochromatic',purple:'Violet',teal:'Turquoise',aqua:'Turquoise',navy:'Blue',beige:'Brown',tan:'Brown',cream:'White',fall:'Autumn',holiday:'Christmas',ocean:'Water',beach:'Water',pastels:'Pastel',neon:'Bright'};
+const xa=s=>String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+const XI={
+ eye:SVGI('<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>'),
+ dots:'<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>',
+ load:SVGI('<path d="M12 3v12M7 10l5 5 5-5"/><rect x="3" y="17" width="18" height="4" rx="1"/>'),
+ full:SVGI('<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>'),
+ similar:SVGI('<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><path d="M17.5 14v7M14 17.5h7"/>'),
+ chev:'<svg class="chv" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>'
+};
+/* Tag rules: the same rules as the palette directory (tags.py). Colors and Styles come from the hex codes. */
+function xHsl(h){const[r,g,b]=rgb(h).map(v=>v/255);const mx=Math.max(r,g,b),mn=Math.min(r,g,b),C=mx-mn,L=(mx+mn)/2;if(!C)return[0,0,L,0];const den=1-Math.abs(2*L-1);const S=den>1e-9?C/den:0;let H=mx===r?((g-b)/C)%6:mx===g?(b-r)/C+2:(r-g)/C+4;H*=60;if(H<0)H+=360;return[H,S,L,C]}
+function xFam(h){const[H,S,L,C]=xHsl(h);
+  if(C<.07)return L<.2?'Black':L>.86?'White':'Gray';
+  if(L<.1||(L<.15&&C<.12))return 'Black';
+  if(L>.95||(L>.85&&C<.12))return 'White';
+  if(H>=10&&H<50&&((L<.42&&C<.6)||(C<.35&&L<.72)))return 'Brown';
+  if(H<12||H>=345)return L>.75?'Pink':'Red';
+  if(H<40)return 'Orange';if(H<68)return 'Yellow';if(H<160)return 'Green';if(H<196)return 'Turquoise';if(H<250)return 'Blue';if(H<290)return 'Violet';
+  return L<.3?'Violet':'Pink'}
+function xSpread(hs){if(hs.length<2)return 0;hs=hs.slice().sort((a,b)=>a-b);let gap=0;hs.forEach((v,i)=>{const nx=i===hs.length-1?hs[0]+360:hs[i+1];gap=Math.max(gap,nx-v)});return 360-gap}
+function xStyles(cs){
+  const n=cs.length,info=cs.map(xHsl),fams=cs.map(xFam);
+  const chrom=info.filter((_,i)=>!['Black','White','Gray'].includes(fams[i]));const out=new Set();
+  if(chrom.length){const warm=chrom.filter(x=>x[0]<70||x[0]>=330).length/chrom.length,cool=chrom.filter(x=>x[0]>=150&&x[0]<290).length/chrom.length;if(warm>=.6)out.add('Warm');if(cool>=.6)out.add('Cold')}
+  if(info.filter(([H,S,L,C])=>S>=.65&&L>=.35&&L<=.72&&C>=.45).length/n>=.5)out.add('Bright');
+  const Ls=info.map(x=>x[2]);
+  if(Ls.reduce((a,b)=>a+b,0)/n<.33||Ls.filter(l=>l<.3).length/n>=.6)out.add('Dark');
+  if(info.filter(([H,S,L])=>S>=.25&&L>=.72&&L<=.95).length/n>=.6)out.add('Pastel');
+  if(chrom.length>=2){const mS=chrom.reduce((a,x)=>a+x[1],0)/chrom.length,mL=chrom.reduce((a,x)=>a+x[2],0)/chrom.length;const neon=chrom.some(([H,S,L])=>S>.85&&L>=.35&&L<=.7);const wm=chrom.filter(x=>x[0]<70||x[0]>=330).length/chrom.length;if(mS>=.2&&mS<=.6&&mL>=.3&&mL<=.75&&!neon&&wm>=.5)out.add('Vintage')}
+  if((!chrom.length&&n>=3)||(chrom.length&&xSpread(chrom.map(x=>x[0]))<=24&&chrom.length>=n/2))out.add('Monochromatic');
+  if(n>=3){const inc=Ls.every((l,i)=>i===0||l>Ls[i-1]-.005),dec=Ls.every((l,i)=>i===0||l<Ls[i-1]+.005);let ok=true;for(let i=0;i<n-1;i++){const s=dE(cs[i],cs[i+1]);if(s<4||s>35){ok=false;break}}if((inc||dec)&&ok&&xSpread(chrom.map(x=>x[0]))<=120)out.add('Gradient')}
+  const hf=new Set(fams.filter(f=>!['Black','White','Gray','Brown'].includes(f)));if(hf.size>=5)out.add('Rainbow');
+  return XSTYLES.filter(s=>out.has(s))}
+const XLIB=SAVED.map((p,i)=>{const cs=p.c;return {i,n:p.n,c:cs,g:p.g||XCFG.own,fams:XFAMS.filter(f=>cs.some(c=>xFam(c)===f)),sty:xStyles(cs),top:PTOPICS[p.n]||[],L:cs.reduce((s,c)=>s+xHsl(c)[2],0)/cs.length,lab:cs.map(toLab),key:cs.join()}});
+const XGROUPS=[...new Set(XLIB.map(p=>p.g))];
+const XCOUNTS=[...new Set(XLIB.map(p=>p.c.length))].sort((a,b)=>a-b);
+const XPAGE=60;
+let xTags=[],xSort='lib',xShown=XPAGE,xSuggI=0,xSuggList=[],xm=null,xqv=null,xqReturn=null,xcon=null,xFullP=null,xLastFav=null,xReturn=null;
+try{const s=JSON.parse(localStorage.getItem('palette-studio-explore')||'null');if(s&&Array.isArray(s.tags))xTags=s.tags.filter(t=>t&&t.k&&t.k!=='similar');if(s&&s.sort)xSort=s.sort}catch(e){}
+const xSave=()=>{try{localStorage.setItem('palette-studio-explore',JSON.stringify({tags:xTags.filter(t=>t.k!=='similar'),sort:xSort}))}catch(e){}};
+const xLab=(a,b)=>Math.hypot(a[0]-b[0],a[1]-b[1],a[2]-b[2]);
+const xPalDist=(A,B)=>{const f=(X,Y)=>X.reduce((s,a)=>s+Math.min(...Y.map(b=>xLab(a,b))),0)/X.length;return (f(A,B)+f(B,A))/2};
+function xMatch(p,t){
+  switch(t.k){
+    case 'color':return p.fams.includes(t.v);
+    case 'style':return p.sty.includes(t.v);
+    case 'topic':return p.top.includes(t.v);
+    case 'group':return p.g===t.v;
+    case 'count':return p.c.length===+t.v;
+    case 'hex':{const l=toLab(t.v);return p.lab.some(x=>xLab(x,l)<14)}
+    case 'text':{const q=t.v.toLowerCase();return p.n.toLowerCase().includes(q)||p.g.toLowerCase().includes(q)}
+  }return true}
+function xTagHtml(t){
+  const lab=t.k==='count'?t.v+' Colors':t.k==='hex'?'#'+t.v:t.k==='similar'?t.n:t.v;
+  const pre=t.k==='text'?'<small>Name</small>':t.k==='hex'?'<small>Near</small>':t.k==='similar'?'<small>Similar to</small>':t.k==='group'?'<small>Group</small>':'';
+  const dot=t.k==='color'?`<i style="background:#${XDOT[t.v]}"></i>`:t.k==='hex'?`<i style="background:#${t.v}"></i>`:'';
+  return `<span class="xtag">${dot}${pre}${esc(lab)}<button type="button" data-untag="${xa(t.k+'|'+(t.key||t.v))}" aria-label="Remove tag ${xa(lab)}">&times;</button></span>`}
+const xSame=(a,b)=>a.k===b.k&&String(a.k==='similar'?a.key:a.v).toLowerCase()===String(b.k==='similar'?b.key:b.v).toLowerCase();
+function xAddTag(t){if(t.k==='similar')xTags=xTags.filter(x=>x.k!=='similar');if(!xTags.some(x=>xSame(x,t)))xTags.push(t);xShown=XPAGE;xSave();xRender();$('xScroll').scrollTop=0}
+function xToggleTag(t){if(xTags.some(x=>xSame(x,t)))xTags=xTags.filter(x=>!xSame(x,t));else xTags.push(t);xShown=XPAGE;xSave();xRender()}
+function xVocab(){return [...XFAMS.map(v=>({k:'color',v,sub:'Color'})),...XSTYLES.map(v=>({k:'style',v,sub:'Style'})),...XTOPICS.map(v=>({k:'topic',v,sub:'Topic'})),...XGROUPS.map(v=>({k:'group',v,sub:'Group'})),...XCOUNTS.map(v=>({k:'count',v:String(v),sub:'Number of colors'}))]}
+function xParse(s){
+  s=s.trim().replace(/,$/,'').trim();if(!s)return null;
+  if(/^#?([0-9a-f]{3}|[0-9a-f]{6})$/i.test(s))return {k:'hex',v:norm(s)};
+  const lc=s.toLowerCase(),syn=XSYN[lc];
+  const hit=xVocab().find(t=>(t.k==='count'?t.v+' colors':t.v.toLowerCase())===lc||(syn&&t.v===syn));
+  if(hit)return {k:hit.k,v:hit.v};
+  const m=lc.match(/^(\d+)\s*colou?rs?$/);if(m&&+m[1]>=2&&+m[1]<=12)return {k:'count',v:m[1]};
+  return {k:'text',v:s}}
+function xSugg(){
+  const q=$('xInput').value.trim().toLowerCase(),box=$('xSugg');
+  if(!q){box.hidden=true;xSuggList=[];return}
+  const syn=XSYN[q];
+  let list=xVocab().filter(t=>{const l=(t.k==='count'?t.v+' colors':t.v.toLowerCase());return l.startsWith(q)||l.includes(q)||(syn&&t.v===syn)}).filter(t=>!xTags.some(x=>xSame(x,t)));
+  list.sort((a,b)=>{const la=(a.k==='count'?a.v+' colors':a.v.toLowerCase()),lb=(b.k==='count'?b.v+' colors':b.v.toLowerCase());return (lb.startsWith(q)-la.startsWith(q))});
+  list=list.slice(0,7);
+  const hx=/^#?([0-9a-f]{3}|[0-9a-f]{6})$/i.test(q)?{k:'hex',v:norm(q),sub:'Colors near this hex'}:null;
+  xSuggList=[...(hx?[hx]:[]),...list,{k:'text',v:$('xInput').value.trim(),sub:'Palette names'}];
+  xSuggI=0;
+  box.innerHTML=xSuggList.map((t,i)=>`<button type="button" role="option" data-sg="${i}" aria-selected="${i===xSuggI}">${t.k==='color'?`<i style="background:#${XDOT[t.v]}"></i>`:t.k==='hex'?`<i style="background:#${t.v}"></i>`:''}${t.k==='text'?`Search names for "${esc(t.v)}"`:esc(t.k==='count'?t.v+' Colors':t.k==='hex'?'#'+t.v:t.v)}<small>${t.sub}</small></button>`).join('');
+  box.hidden=false}
+function xHideSugg(){$('xSugg').hidden=true;xSuggList=[]}
+function xPickSugg(i){const t=xSuggList[i];if(!t)return;$('xInput').value='';xHideSugg();xAddTag({k:t.k,v:t.v});$('xInput').focus()}
+function xFiltersHtml(){
+  const on=t=>xTags.some(x=>xSame(x,t));
+  const chips=(k,vals,lab,dot)=>`<div class="xchips">${vals.map(v=>`<button type="button" data-chip="${xa(k+'|'+v)}" aria-pressed="${on({k,v:String(v)})}">${dot?`<i style="background:#${XDOT[v]}"></i>`:''}${esc(lab?lab(v):v)}</button>`).join('')}</div>`;
+  return `<h4>Colors</h4>${chips('color',XFAMS,null,true)}<h4>Styles</h4>${chips('style',XSTYLES)}<h4>Number of Colors</h4>${chips('count',XCOUNTS.map(String),v=>v)}<h4>Topics</h4>${chips('topic',XTOPICS)}<h4>Groups</h4>${chips('group',XGROUPS)}<p class="xfnote">${esc(XCFG.topicNote)} Tags combine, so each one you add narrows the list.</p>`}
+function xFavHas(cs){return favState==='on'&&fav.palettes.some(p=>p.colors.join()===cs.join())}
+function xList(){
+  let list=XLIB.filter(p=>xTags.every(t=>t.k==='similar'||xMatch(p,t)));
+  const sim=xTags.find(t=>t.k==='similar');
+  if(sim){const base=sim.c.map(toLab);list=list.filter(p=>p.key!==sim.key).map(p=>({p,s:xPalDist(base,p.lab)})).sort((a,b)=>a.s-b.s).slice(0,30).map(x=>x.p);if(xSort==='lib')return list}
+  const by={az:(a,b)=>a.n.localeCompare(b.n),za:(a,b)=>b.n.localeCompare(a.n),most:(a,b)=>b.c.length-a.c.length||a.i-b.i,fewest:(a,b)=>a.c.length-b.c.length||a.i-b.i,light:(a,b)=>b.L-a.L,dark:(a,b)=>a.L-b.L,lib:(a,b)=>a.i-b.i}[xSort];
+  return list.slice().sort(by)}
+function xCard(p){
+  const inbar=state.colors.join()===p.key,fv=xFavHas(p.c);
+  return `<div class="xcard${inbar?' inbar':''}" data-x="${p.i}"><div class="xstrip">${p.c.map(c=>`<button type="button" class="xsw" data-hex="${c}" style="background:#${c};color:${pickText(c,[],0,false)}" title="Copy #${c}" aria-label="Copy #${c}"><span>${c}</span></button>`).join('')}</div><div class="xinfo"><button type="button" class="xname" data-load="${p.i}" title="Load ${xa(p.n)} in the Studio bar">${esc(p.n)}<small>${esc(p.g)} &middot; ${p.c.length} colors</small></button>${inbar?'<span class="xinb">In Bar</span>':''}${favState==='on'?`<button type="button" class="xic" data-fav="${p.i}" aria-pressed="${fv}" title="${fv?'Remove from My Favorites':'Save to My Favorites'}" aria-label="${fv?'Remove':'Save'} ${xa(p.n)} ${fv?'from':'to'} My Favorites">${fv?IC.heartOn:IC.heart}</button>`:''}<button type="button" class="xic" data-qv="${p.i}" title="Quick View" aria-label="Quick View of ${xa(p.n)}">${XI.eye}</button><button type="button" class="xic" data-more="${p.i}" title="More options" aria-label="More options for ${xa(p.n)}" aria-haspopup="menu">${XI.dots}</button></div></div>`}
+function xRender(){
+  if($('browsePop').hidden||$('bpLoad').hidden)return;
+  $('xTags').innerHTML=xTags.map(xTagHtml).join('');
+  const nf=xTags.filter(t=>!['text','hex','similar'].includes(t.k)).length;
+  $('xFiltBtn').innerHTML=$('xFiltBtn').innerHTML.replace(/<b>.*<\/b>/,'')+(nf?`<b>${nf}</b>`:'');
+  if(!$('xFilters').hidden)$('xFilters').innerHTML=xFiltersHtml();
+  $('xSort').value=xSort;
+  const list=xList(),shown=list.slice(0,xShown);
+  $('xCount').textContent=`${list.length} of ${XLIB.length} palettes${xTags.some(t=>t.k==='similar')?' (closest 30)':''}`;
+  $('xClearTags').hidden=!xTags.length;
+  $('xGrid').innerHTML=shown.length?shown.map(xCard).join(''):`<div class="xempty">No palettes match every tag. Remove a tag to see more.</div>`;
+  $('xMore').hidden=list.length<=xShown;
+  if(!$('xMore').hidden)$('xMore').textContent=`Show More (${list.length-xShown} left)`;
+  xLastFav=favState}
+function xSync(){
+  if($('browsePop').hidden)return;
+  if(xLastFav!==favState){xRender();return}
+  const k=state.colors.join();
+  document.querySelectorAll('#xGrid .xcard').forEach(el=>{const p=XLIB[+el.dataset.x];const on=p.key===k;el.classList.toggle('inbar',on);let b=el.querySelector('.xinb');if(on&&!b){b=document.createElement('span');b.className='xinb';b.textContent='In Bar';el.querySelector('.xname').after(b)}else if(!on&&b)b.remove();
+    const h=el.querySelector('[data-fav]');if(h){const fv=xFavHas(p.c);if(h.getAttribute('aria-pressed')!==String(fv)){h.setAttribute('aria-pressed',String(fv));h.innerHTML=fv?IC.heartOn:IC.heart;h.title=fv?'Remove from My Favorites':'Save to My Favorites';h.setAttribute('aria-label',`${fv?'Remove':'Save'} ${p.n} ${fv?'from':'to'} My Favorites`)}}});
+  if(xqv)xQvFav()}
+function xLayout(){const b=document.querySelector('.bar');if(b)document.documentElement.style.setProperty('--barh',b.offsetHeight+'px')}
+function browseView(v){
+  $('bpLoad').hidden=v!=='load';$('bpFav').hidden=v!=='fav';
+  $('xvLib').setAttribute('aria-selected',String(v==='load'));$('favOpen').setAttribute('aria-selected',String(v==='fav'));
+  $('xScroll').scrollTop=0;if(v==='load')xRender()}
+function xOpen(view){xReturn=document.activeElement;closeAll(null);$('browsePop').hidden=false;document.body.classList.add('xopen');$('browseBtn').setAttribute('aria-expanded','true');xLayout();browseView(view||'load');if(innerWidth>760&&(view||'load')==='load')$('xInput').focus();else $('xClose').focus()}
+function xClose(){xHideMenu();xHideSugg();$('browsePop').hidden=true;document.body.classList.remove('xopen');$('browseBtn').setAttribute('aria-expanded','false');if(xReturn&&xReturn.isConnected&&!$('browsePop').contains(xReturn))xReturn.focus();else $('browseBtn').focus()}
+$('browseBtn').onclick=()=>{if($('browsePop').hidden)xOpen();else xClose()};
+$('xClose').onclick=xClose;
+$('xvLib').onclick=()=>browseView('load');
+$('favOpen').onclick=()=>browseView('fav');
+$('favBack').onclick=()=>browseView('load');
+$('xFiltBtn').onclick=()=>{const f=$('xFilters'),open=f.hidden;f.hidden=!open;$('xFiltBtn').setAttribute('aria-expanded',String(open));if(open)f.innerHTML=xFiltersHtml()};
+$('xFilters').addEventListener('click',e=>{const b=e.target.closest('[data-chip]');if(!b)return;const ch=b.dataset.chip,ix=ch.indexOf('|'),k=ch.slice(0,ix),v=ch.slice(ix+1);xToggleTag({k,v})});
+$('xBox').addEventListener('click',e=>{const u=e.target.closest('[data-untag]');if(u){const ut=u.dataset.untag,ix=ut.indexOf('|'),k=ut.slice(0,ix),v=ut.slice(ix+1);xTags=xTags.filter(t=>!(t.k===k&&String(t.k==='similar'?t.key:t.v).toLowerCase()===v.toLowerCase()));xShown=XPAGE;xSave();xRender();$('xInput').focus();return}if(e.target===$('xBox'))$('xInput').focus()});
+$('xClearTags').onclick=()=>{xTags=[];xShown=XPAGE;xSave();xRender();$('xInput').focus()};
+$('xInput').addEventListener('input',xSugg);
+$('xInput').addEventListener('keydown',e=>{
+  const box=$('xSugg');
+  if(e.key==='ArrowDown'||e.key==='ArrowUp'){if(box.hidden)return;e.preventDefault();xSuggI=(xSuggI+(e.key==='ArrowDown'?1:-1)+xSuggList.length)%xSuggList.length;box.querySelectorAll('[data-sg]').forEach((b,i)=>b.setAttribute('aria-selected',String(i===xSuggI)));return}
+  if(e.key==='Enter'||e.key===','){const v=$('xInput').value;if(!v.trim())return;e.preventDefault();if(!box.hidden&&xSuggList.length&&xSuggI<xSuggList.length-1)xPickSugg(xSuggI);else{const t=xParse(v);$('xInput').value='';xHideSugg();if(t)xAddTag(t)}return}
+  if(e.key==='Backspace'&&!$('xInput').value&&xTags.length){xTags.pop();xShown=XPAGE;xSave();xRender()}
+});
+$('xInput').addEventListener('blur',()=>setTimeout(()=>{if(!$('xSugg').contains(document.activeElement))xHideSugg()},150));
+$('xSugg').addEventListener('mousedown',e=>e.preventDefault());
+$('xSugg').addEventListener('click',e=>{const b=e.target.closest('[data-sg]');if(b)xPickSugg(+b.dataset.sg)});
+$('xSort').onchange=e=>{xSort=e.target.value;xShown=XPAGE;xSave();xRender()};
+$('xMore').onclick=()=>{xShown+=XPAGE;xRender()};
+function xFavToggle(p){
+  if(favState!=='on')return;
+  if(xFavHas(p.c)){favSave({...fav,palettes:fav.palettes.filter(x=>x.colors.join()!==p.key)});toast('Removed '+p.n+' from My Favorites')}
+  else{if(fav.palettes.length>=200){toast('Saved palettes are full (200). Delete some first.');return}favSave({...fav,palettes:[{id:'p'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),name:p.n,colors:p.c.slice(0,12),saved:new Date().toISOString()},...fav.palettes]});toast('Saved '+p.n+' to My Favorites')}
+  xSync()}
+function xLoad(p){loadColors(p.c.slice(),p.n,true);xSync()}
+$('xGrid').addEventListener('click',e=>{
+  const sw=e.target.closest('[data-hex]');if(sw){copyText('#'+sw.dataset.hex);return}
+  const l=e.target.closest('[data-load]');if(l){xLoad(XLIB[+l.dataset.load]);return}
+  const f=e.target.closest('[data-fav]');if(f){xFavToggle(XLIB[+f.dataset.fav]);return}
+  const q=e.target.closest('[data-qv]');if(q){xOpenQv(XLIB[+q.dataset.qv]);return}
+  const m=e.target.closest('[data-more]');if(m){const p=XLIB[+m.dataset.more];if(xm&&xm.anchor===m)xHideMenu();else xShowMenu(p,m)}
+});
+/* Copy As */
+const xSlug=s=>s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'palette';
+function xFormat(kind,p){
+  const cs=p.c,sl=xSlug(p.n);
+  if(kind==='link')return XCFG.link+'#'+cs.map(c=>c.toLowerCase()).join('-');
+  if(kind==='hex')return cs.map(c=>'#'+c).join(', ');
+  if(kind==='css')return `/* ${p.n} */\n:root {\n${cs.map((c,i)=>`  --${sl}-${i+1}: #${c};`).join('\n')}\n}`;
+  if(kind==='scss')return `// ${p.n}\n${cs.map((c,i)=>`$${sl}-${i+1}: #${c};`).join('\n')}`;
+  if(kind==='tailwind')return `// ${p.n}: add inside theme.extend.colors in tailwind.config.js\n'${sl}': {\n${cs.map((c,i)=>`  '${i+1}': '#${c}',`).join('\n')}\n},`;
+  if(kind==='array')return JSON.stringify(cs);
+  return cs.join(' ')}
+const XCOPY=[['link','Link'],['hex','Hex Codes'],['css','CSS Variables'],['scss','SCSS Variables'],['tailwind','Tailwind Colors'],['array','Array']];
+/* Palette menu */
+function xShowMenu(p,anchor){
+  xm={p,anchor,sub:false};const fv=xFavHas(p.c);
+  const it=(a,l,ic)=>`<button type="button" role="menuitem" data-xa="${a}">${ic||''}<span>${l}</span></button>`;
+  $('xMenu').innerHTML=it('load','Load in Studio Bar',XI.load)+(xqv?'':it('qv','Quick View',XI.eye))+it('full','View Fullscreen',XI.full)+
+    `<button type="button" role="menuitem" data-xa="copyas" aria-expanded="false" aria-controls="xSub">${IC.copy}<span>Copy As</span>${XI.chev}</button><div class="xsub" id="xSub" hidden>${XCOPY.map(([k,l])=>`<button type="button" role="menuitem" data-xc="${k}">${l}</button>`).join('')}</div>`+
+    (favState==='on'?it('fav',fv?'Remove From My Favorites':'Save to My Favorites',fv?IC.heartOn:IC.heart):'')+'<hr>'+
+    it('similar','Explore Similar',XI.similar)+it('contrast','Check Contrast',IC.contrast);
+  const m=$('xMenu');m.hidden=false;anchor.setAttribute('aria-expanded','true');xPlaceMenu();
+  const f=m.querySelector('button');if(f)f.focus()}
+function xPlaceMenu(){if(!xm)return;const m=$('xMenu'),r=xm.anchor.getBoundingClientRect(),w=m.offsetWidth,h=m.offsetHeight;let x=Math.min(Math.max(10,r.right-w),innerWidth-w-10),y=r.bottom+6;if(y+h>innerHeight-10)y=Math.max(10,r.top-h-6);m.style.left=x+'px';m.style.top=y+'px'}
+function xHideMenu(refocus){if(!xm)return;const a=xm.anchor;a.removeAttribute('aria-expanded');xm=null;$('xMenu').hidden=true;if(refocus&&a.isConnected)a.focus()}
+$('xMenu').addEventListener('click',e=>{
+  if(!xm)return;const p=xm.p;
+  const c=e.target.closest('[data-xc]');if(c){copyText(xFormat(c.dataset.xc,p),'Copied '+XCOPY.find(x=>x[0]===c.dataset.xc)[1]+' for '+p.n);xHideMenu(true);return}
+  const b=e.target.closest('[data-xa]');if(!b)return;const a=b.dataset.xa;
+  if(a==='copyas'){const s=$('xSub'),open=s.hidden;s.hidden=!open;b.setAttribute('aria-expanded',String(open));xPlaceMenu();if(open)s.querySelector('button').focus();return}
+  xHideMenu(a==='fav'||a==='load');
+  if(a==='load')xLoad(p);else if(a==='qv')xOpenQv(p);else if(a==='full')xOpenFull(p);else if(a==='fav')xFavToggle(p);else if(a==='contrast')xOpenCon(p);
+  else if(a==='similar'){if(xqv)xCloseQv();if($('browsePop').hidden)xOpen('load');else browseView('load');xAddTag({k:'similar',n:p.n,key:p.key,c:p.c.slice()});toast('Palettes closest to '+p.n)}
+});
+$('xMenu').addEventListener('keydown',e=>{
+  const items=[...$('xMenu').querySelectorAll('button')].filter(b=>b.offsetParent!==null);const i=items.indexOf(document.activeElement);
+  if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();const n=items[(i+(e.key==='ArrowDown'?1:-1)+items.length)%items.length];if(n)n.focus()}
+  if(e.key==='Tab')xHideMenu()});
+document.addEventListener('pointerdown',e=>{if(xm&&!e.target.closest('#xMenu')&&e.target.closest('[data-more],#xQvMore')!==xm.anchor)xHideMenu()});
+addEventListener('resize',()=>{xHideMenu();xLayout()});
+$('xScroll').addEventListener('scroll',()=>xHideMenu(),{passive:true});
+/* Quick View */
+function xOpenQv(p,k){xqv={p,k:k||0};xqReturn=document.activeElement;closeAll(null);xHideMenu();xDrawQv();$('xQv').hidden=false;document.body.classList.add('zoomed');$('xQvClose').focus()}
+function xCloseQv(){if(!xqv)return;xqv=null;xHideMenu();$('xQv').hidden=true;if(zoomIdx<0&&infoIdx<0&&!pinfoOpen)document.body.classList.remove('zoomed');if(xqReturn&&xqReturn.isConnected)xqReturn.focus()}
+function xQvFav(){const b=$('xQvFav');b.hidden=favState!=='on';if(!xqv||b.hidden)return;const fv=xFavHas(xqv.p.c);b.innerHTML=`<span class="ico">${fv?IC.heartOn:IC.heart}${fv?'Saved':'Save'}</span>`;b.setAttribute('aria-pressed',String(fv))}
+function xDrawQv(){
+  const{p,k}=xqv,c=p.c[k];
+  const[r,g,b]=rgb(c),[H,S,L]=toHsl(rgb(c)),[hh,ss,vv]=toHsv(c),cm=toCmyk(c),lab=toLab(c).map(v=>Math.round(v));
+  const rows=[['HEX','#'+c],['HSB',`${Math.round(hh)}, ${Math.round(ss*100)}, ${Math.round(vv*100)}`],['HSL',`${Math.round(H)}, ${Math.round(S*100)}, ${Math.round(L*100)}`],['RGB',`${r}, ${g}, ${b}`],['CMYK',cm.join(', ')],['LAB',lab.join(', ')],['Name',colorName(c)]];
+  $('xQvName').textContent=p.n;
+  const body=$('xQvBody');body.style.background='#'+c;body.style.color=pickText(c,[],0,false);
+  body.innerHTML=rows.map(([l,v])=>`<button type="button" class="xqrow" data-qcopy="${xa(v)}" title="Copy ${xa(v)}"><span><small>${l}</small>${l==='Name'?'~ ':''}${esc(v)}</span>${IC.copy}</button>`).join('');
+  $('xQvStrip').innerHTML=p.c.map((h,i)=>`<button type="button" data-qk="${i}" aria-pressed="${i===k}" style="background:#${h};color:${pickText(h,[],0,false)}" aria-label="Color ${i+1}, #${h}"><i></i><span>#${h}</span></button>`).join('');
+  xQvFav()}
+$('xQvBody').addEventListener('click',e=>{const b=e.target.closest('[data-qcopy]');if(b)copyText(b.dataset.qcopy)});
+$('xQvStrip').addEventListener('click',e=>{const b=e.target.closest('[data-qk]');if(!b||!xqv)return;xqv.k=+b.dataset.qk;xDrawQv();const n=$('xQvStrip').querySelector(`[data-qk="${xqv.k}"]`);if(n)n.focus()});
+$('xQv').addEventListener('keydown',e=>{if(!xqv||(e.key!=='ArrowLeft'&&e.key!=='ArrowRight')||e.target.closest('#xMenu'))return;e.preventDefault();const n=xqv.p.c.length;xqv.k=(xqv.k+(e.key==='ArrowRight'?1:-1)+n)%n;const inStrip=e.target.closest('#xQvStrip');xDrawQv();if(inStrip){const f=$('xQvStrip').querySelector(`[data-qk="${xqv.k}"]`);if(f)f.focus()}});
+$('xQvClose').onclick=xCloseQv;
+$('xQvLoad').onclick=()=>{if(xqv)xLoad(xqv.p)};
+$('xQvFav').onclick=()=>{if(xqv){xFavToggle(xqv.p);xQvFav()}};
+$('xQvMore').onclick=e=>{if(!xqv)return;if(xm&&xm.anchor===$('xQvMore'))xHideMenu();else xShowMenu(xqv.p,$('xQvMore'))};
+$('xQv').addEventListener('click',e=>{if(e.target===$('xQv'))xCloseQv()});
+/* Fullscreen */
+function xOpenFull(p){xFullP={p,ret:document.activeElement};const f=$('xFull');
+  f.innerHTML=p.c.map(c=>`<button type="button" class="xfb" data-fc="${c}" style="background:#${c};color:${pickText(c,[],0,false)}" title="Copy #${c}"><b>#${c}</b><small>${esc(colorName(c))}</small></button>`).join('')+`<span class="xft">${esc(p.n)}</span><button type="button" class="xfx" id="xFullX" aria-label="Close full screen">&times;</button>`;
+  f.hidden=false;document.body.classList.add('zoomed');$('xFullX').focus()}
+function xCloseFull(){if(!xFullP)return;const r=xFullP.ret;xFullP=null;$('xFull').hidden=true;$('xFull').innerHTML='';if(zoomIdx<0&&infoIdx<0&&!pinfoOpen&&!xqv)document.body.classList.remove('zoomed');if(r&&r.isConnected)r.focus()}
+$('xFull').addEventListener('click',e=>{if(e.target.closest('#xFullX')){xCloseFull();return}const b=e.target.closest('[data-fc]');if(b)copyText('#'+b.dataset.fc)});
+/* Contrast grid */
+function xOpenCon(p){xcon={p,ret:document.activeElement};drawCon();$('xCon').hidden=false;document.body.classList.add('zoomed');$('xConClose').focus()}
+function drawCon(){
+  if(!xcon)return;const cs=xcon.p.c,min=+$('xConMin').value,dim=$('xConOnly').checked;
+  let pass=0,tot=0;
+  const rows=cs.map(bg=>`<tr><th class="rowh" scope="row">#${bg}<i style="background:#${bg}"></i></th>${cs.map(fg=>{if(fg===bg)return '<td class="self" aria-label="Same color"></td>';const k=con(bg,fg),[r]=rating(k);tot++;if(k>=min)pass++;return `<td class="${dim&&k<min?'no':''}" style="background:#${bg};color:#${fg}" title="#${fg} on #${bg}: ${k.toFixed(2)}:1, ${r}"><b>Aa</b>${k.toFixed(1)} ${r==='AA Large'?'Large':r}</td>`}).join('')}</tr>`).join('');
+  $('xConName').textContent='Check Contrast: '+xcon.p.n;
+  $('xConSub').textContent=`${pass/2} of ${tot/2} color pairs reach ${min}:1. Large means it passes AA for large text only.`;
+  $('xConBody').innerHTML=`<table class="xct"><thead><tr><th></th>${cs.map(c=>`<th scope="col"><i style="background:#${c}"></i>#${c}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table>`}
+function xCloseCon(){if(!xcon)return;const r=xcon.ret;xcon=null;$('xCon').hidden=true;if(zoomIdx<0&&infoIdx<0&&!pinfoOpen&&!xqv)document.body.classList.remove('zoomed');if(r&&r.isConnected)r.focus()}
+$('xConClose').onclick=xCloseCon;
+$('xConOnly').onchange=drawCon;$('xConMin').onchange=drawCon;
+$('xCon').addEventListener('click',e=>{if(e.target===$('xCon'))xCloseCon()});
+/* Escape order: menu, full screen, contrast, Quick View, suggestions, then the panel itself */
+addEventListener('keydown',e=>{
+  if(e.key!=='Escape')return;
+  if(xm){e.stopPropagation();xHideMenu(true);return}
+  if(xFullP){e.stopPropagation();xCloseFull();return}
+  if(xcon){e.stopPropagation();xCloseCon();return}
+  if(xqv){e.stopPropagation();xCloseQv();return}
+  if(!$('xSugg').hidden){e.stopPropagation();xHideSugg();return}
+  const busy=pops.some(p=>!$(p).hidden)||infoIdx>=0||pinfoOpen||zoomIdx!==-1||!!document.querySelector('.mood-wrap.show');
+  if(!busy&&!$('browsePop').hidden){e.stopPropagation();xClose()}
+},true);
+if(window.ResizeObserver){const b=document.querySelector('.bar');if(b)new ResizeObserver(xLayout).observe(b)}
+xLayout();
+/* A link with hex codes after # (from Copy As, Link) loads that palette */
+try{const hm=(decodeURIComponent(location.hash||'').match(/[0-9a-f]{6}/gi)||[]).map(norm).filter(Boolean);if(hm.length>=2){state.colors=hm.slice(0,12);state.locks=state.colors.map(()=>false)}}catch(e){}
 render();
 </script>
 
